@@ -1,0 +1,24 @@
+{% extends "layout.html" %} {% block title %}Luo tunnus - TechTori{% endblock %}
+{% block content %}
+<h1>Rekisteröidy</h1>
+<form method="post" action="/register">
+  <div>
+    <label for="username">Käyttäjätunnus:</label>
+    <input type="text" id="username" name="username" required />
+  </div>
+  <div>
+    <label for="password">Salasana:</label>
+    <input type="password" id="password" name="password" required />
+  </div>
+  <div>
+    <label for="password_confirm">Vahvista salasana:</label>
+    <input
+      type="password"
+      id="password_confirm"
+      name="password_confirm"
+      required
+    />
+  </div>
+  <button type="submit">Rekisteröidy</button>
+</form>
+{% endblock %}

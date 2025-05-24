@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/main.css" />
+  </head>
+  <body>
+    <div class="header">
+      <a href="/" class="title" title="Etusivu">TechTori</a>
+      <div class="header-links">
+        {% if session.user_id %}
+        <a href="/logout">Kirjaudu ulos</a>{% else %}
+        <a href="/login">Kirjaudu sisään</a> |
+        <a href="/register">Luo tunnus</a>{% endif %}
+      </div>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <ul class="flashes">
+      {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}{% block content %}{% endblock %}
+  </body>
+</html>

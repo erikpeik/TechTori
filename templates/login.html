@@ -1,0 +1,17 @@
+{% extends "layout.html" %} {% block title %}Kirjaudu sisään - TechTori{%
+endblock %} {% block content %}
+<h1>Kirjaudu sisään</h1>
+<form method="post" action="/login">
+  <div>
+    <label for="username">Käyttäjätunnus:</label>
+    <input type="text" id="username" name="username" required />
+  </div>
+
+  <div>
+    <label for="password">Salasana:</label>
+    <input type="password" id="password" name="password" required />
+  </div>
+
+  <button type="submit">Kirjaudu sisään</button>
+</form>
+{% endblock %}
