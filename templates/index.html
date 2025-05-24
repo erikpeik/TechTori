@@ -2,9 +2,7 @@
 block content %} {% if session.username %}
 <h1>Tervetuloa, {{ session.username }}!</h1>
 {% else %}
-<h1>
-  Tervetuloa TechToriin! Luo tunnus tai kirjaudu sisään nähdäksesi ilmoitukset.
-</h1>
+<h1>Tervetuloa TechToriin!</h1>
 {% endif %}
 <ul>
   {% for listing in listings %}

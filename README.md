@@ -4,7 +4,7 @@ Yksinkertainen markkinapaikka tietokonekomponenttien ostamiseen ja myymiseen. Lu
 
 ## Sovelluksen toiminta
 
-- [ ] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään.
+- [x] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään.
 - [ ] Käyttäjä pystyy luomaan ilmoituksen, muokkaamaan ja poistamaan sen.
 - [ ] Käyttäjä pystyy selaamaan ilmoituksia ja etsimään tiettyjä osia.
 - [ ] Käyttäjä pystyy lisäämään ilmoituksia suosikkeihin.
