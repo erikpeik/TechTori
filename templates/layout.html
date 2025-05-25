@@ -9,6 +9,7 @@
       <a href="/" class="title" title="Etusivu">TechTori</a>
       <div class="header-links">
         {% if session.user_id %}
+        <a href="/create-item">Luo ilmoitus</a> |
         <a href="/logout">Kirjaudu ulos</a>{% else %}
         <a href="/login">Kirjaudu sisään</a> |
         <a href="/register">Luo tunnus</a>{% endif %}
@@ -21,6 +22,7 @@
       <li class="{{ category }}">{{ message }}</li>
       {% endfor %}
     </ul>
-    {% endif %} {% endwith %}{% block content %}{% endblock %}
+    {% endif %} {% endwith %}
+    <div class="container">{% block content %}{% endblock %}</div>
   </body>
 </html>

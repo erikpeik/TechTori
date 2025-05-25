@@ -12,9 +12,7 @@ def create_user(username, password):
 
 def authenticate_user(username, password):
     sql = "SELECT id, password_hash FROM users WHERE username = ?"
-    print(username, password)
     result = db.fetch_query(sql, (username,))
-    print(result)
     if not result:
         return None
 

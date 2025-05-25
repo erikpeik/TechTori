@@ -1,0 +1,39 @@
+{% extends "layout.html" %} {% block title %}Uusi ilmoitus - TechTori{% endblock
+%} {% block content %}
+<h1>Uusi ilmoitus</h1>
+<form method="post" action="/create-item">
+  <div>
+    <label for="title">Otsikko:</label>
+    <input type="text" id="title" name="title" required />
+  </div>
+  <div>
+    <label for="description">Kuvaus:</label>
+    <textarea id="description" name="description" required></textarea>
+  </div>
+  <div>
+    <label for="price">Hinta (€):</label>
+    <input type="number" id="price" name="price" step="0.01" required />
+  </div>
+  <div>
+    <label for="category">Kategoria:</label>
+    <select id="category" name="category" required>
+      <option value="" disabled selected>Valitse kategoria</option>
+      {% for category in categories %}
+      <option value="{{ category.id }}">{{ category.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label for="condition">Kunto:</label>
+    <select id="condition" name="condition" required>
+      <option value="" disabled selected>Valitse kunto</option>
+      {% for condition in conditions %}
+      <option value="{{ condition.id }}">{{ condition.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+
+  <button type="submit">Lähetä ilmoitus</button>
+  {% endblock %}
+</form>
