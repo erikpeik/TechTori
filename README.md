@@ -10,7 +10,7 @@ Yksinkertainen markkinapaikka tietokonekomponenttien ostamiseen ja myymiseen. Lu
 - [x] Käyttäjä pystyy lisäämään ilmoituksia suosikkeihin.
 - [x] Sovelluksessa on käyttäjäsivut, jossa näkyvät käyttäjän ilmoitukset.
 - [x] Käyttäjä pystyy valitsemaan ilmoitukselle yhden tai useamman luokituksen (esim. osan tyyppi, merkki, tavaran kunto jne.)
-- [ ] Käyttäjä pystyy "ostamaan" ilmoituksen, jolloin se poistuu aktiiivisista ilmoituksista.
+- [x] Käyttäjä pystyy "ostamaan" ilmoituksen, jolloin se poistuu aktiiivisista ilmoituksista.
 
 ## Sovelluksen asennus
 
