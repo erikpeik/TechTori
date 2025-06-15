@@ -1,18 +1,36 @@
+<h2 class="center-text">Listaukset</h2>
 <div class="listings">
-  {% for listing in listings %}
-  <a class="listing" href="/listing/{{ listing.id }}">
-    <div>
-      <h3>{{ listing.title }}</h3>
-      <p>
-        {{ listing.description[:150] }}{% if listing.description|length > 150
-        %}...{% endif %}
-      </p>
-    </div>
-    <div>
-      <p><strong>Kategoria:</strong> {{ listing.category }}</p>
-      <p><strong>Kunto:</strong> {{ listing.condition }}</p>
-      <p><strong>Hinta:</strong> {{ listing.price }}€</p>
-    </div>
-  </a>
-  {% endfor %}
+  {% if not listings %}
+  <p>Ei ilmoituksia saatavilla.</p>
+  {% else %} {% for listing in listings %}
+  <div class="listing">
+    <a href="/listing/{{ listing.id }}" class="listing-body">
+      <div>
+        <h3>{{ listing.title }}</h3>
+        <p>
+          {{ listing.description[:150] }}{% if listing.description|length > 150
+          %}...{% endif %}
+        </p>
+      </div>
+      <div>
+        <p><strong>Kategoria:</strong> {{ listing.category }}</p>
+        <p><strong>Kunto:</strong> {{ listing.condition }}</p>
+        <p><strong>Hinta:</strong> {{ listing.price }}€</p>
+      </div></a
+    >
+    {% if session.user_id|int != listing.user_id %}
+    <form action="/favorite/{{ listing.id }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+      <input type="hidden" name="redirect" value="{{ request.path }}" />
+      <button type="submit" class="favorite-button">
+        {% if listing.is_favorited %}
+        <img src="/static/img/heart-filled.svg" color="red" />
+        {% else %}
+        <img src="/static/img/heart.svg" color="red" />
+        {% endif %}
+      </button>
+    </form>
+    {% endif %}
+  </div>
+  {% endfor %} {% endif %}
 </div>

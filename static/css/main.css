@@ -102,10 +102,11 @@ body {
 
 .listing {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
-  gap: 10px;
+  gap: 5px;
   margin: 0;
+  align-items: flex-start;
 
   border: 1px solid #ccc;
   padding: 15px;
@@ -131,6 +132,39 @@ body {
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     background-color: #f0f0f2;
+  }
+}
+
+.listing-body {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  flex: 1;
+}
+
+.favorite-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  img {
+    width: 22px;
+    height: 22px;
+    padding: 5px;
+  }
+
+  :hover {
+    background-color: #dadada;
+
+    border-radius: 50%;
   }
 }
 
@@ -170,6 +204,11 @@ body {
   &:hover {
     text-decoration: underline;
   }
+}
+
+.center-text {
+  text-align: center;
+  margin: 20px 0;
 }
 
 @media (max-width: 768px) {

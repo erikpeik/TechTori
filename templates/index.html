@@ -3,4 +3,6 @@ block content %} {% if session.username %}
 <h1>Tervetuloa, {{ session.username }}!</h1>
 {% else %}
 <h1>Tervetuloa TechToriin!</h1>
-{% endif %} {% include "listings.html" %} {% endblock %}
+{% endif %}
+<hr />
+{% include "listings.html" %} {% endblock %}

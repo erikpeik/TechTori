@@ -6,6 +6,7 @@ import config
 import categories
 import conditions
 import listings
+import favorites
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -26,6 +27,12 @@ def check_csrf():
 @app.route("/")
 def index():
     listings_list = listings.get_listings()
+    favorites_list = favorites.get_favorited_ids()
+
+    listings_list = [dict(listing) for listing in listings_list]
+    for listing in listings_list:
+        listing["is_favorited"] = listing["id"] in favorites_list
+
     return render_template("index.html",  listings=listings_list)
 
 
@@ -114,9 +121,10 @@ def create_item():
 @app.route("/listing/<int:listing_id>")
 def listing_detail(listing_id):
     listing = listings.get_listing(listing_id)
+    is_favorited = favorites.is_favorited(listing_id)
     if not listing:
         abort(404)
-    return render_template("listing.html", listing=listing)
+    return render_template("listing.html", listing=listing , is_favorited=is_favorited)
 
 @app.route("/edit-listing/<int:listing_id>", methods=["GET", "POST"])
 def edit_listing(listing_id):
@@ -180,3 +188,18 @@ def user_profile(user_id):
         abort(404)
     user_listings = listings.get_user_listings(user_id)
     return render_template("profile.html", user=user_info, listings=user_listings)
+
+@app.route("/favorite/<int:listing_id>", methods=["POST"])
+def favorite_listing(listing_id):
+    require_login()
+    check_csrf()
+    redirect_url = request.form.get("redirect", "/")
+
+    if favorites.is_favorited(listing_id):
+        favorites.remove_favorite(listing_id)
+        flash("Ilmoitus poistettu suosikeista", "success")
+    else:
+        favorites.add_favorite(listing_id)
+        flash("Ilmoitus lisätty suosikkeihin", "success")
+
+    return redirect(redirect_url)

@@ -5,10 +5,6 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE conditions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE
-);
 
 CREATE TABLE listings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,10 +21,25 @@ CREATE TABLE listings (
     FOREIGN KEY (condition_id) REFERENCES conditions(id)
 );
 
+CREATE TABLE favorites (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    listing_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (listing_id) REFERENCES listings(id)
+);
+
 CREATE TABLE categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE
 );
+
+CREATE TABLE conditions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE
+);
+
 
 CREATE INDEX idx_listing_title ON listings(title);
 CREATE INDEX idx_category_name ON categories(name);

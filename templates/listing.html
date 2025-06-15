@@ -2,7 +2,21 @@
 {% block css %}
 <link rel="stylesheet" href="/static/css/listing.css" />
 {% endblock %} {% block content %}
-<h1>{{ listing.title }}</h1>
+<div class="title-row">
+  <h1>{{ listing.title }}</h1>
+  {% if session.user_id != listing.user_id %}
+  <form action="/favorite/{{ listing.id }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+    <input type="hidden" name="redirect" value="{{ request.path }}" />
+    {% if is_favorited %}
+    <button type="submit" class="btn">Poista suosikeista</button>
+    {% else %}
+    <button type="submit" class="btn secondary">Lisää suosikkeihin</button>
+    {% endif %}
+  </form>
+  {% endif %}
+</div>
+
 <div class="listing-details">
   <div class="listing-price">
     <p>Myydään</p>

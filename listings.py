@@ -1,8 +1,10 @@
+from flask import session
 import db
 from datetime import datetime
 
 
 def get_listings():
+    user_id = session.get('user_id', None)
     sql = """
     SELECT  listings.id,
             listings.user_id,
@@ -18,8 +20,10 @@ def get_listings():
     JOIN users ON listings.user_id = users.id
     JOIN conditions ON listings.condition_id = conditions.id
     JOIN categories ON listings.category_id = categories.id
+    WHERE listings.user_id IS NOT ?
     """
-    return db.fetch_query(sql)
+    return db.fetch_query(sql, (user_id,))
+
 
 
 def add_listing(user_id, title, description, price, condition_id, category_id):
@@ -88,6 +92,7 @@ def delete_listing(listing_id):
 def get_user_listings(user_id):
     sql = """
     SELECT  listings.id,
+            listings.user_id,
             listings.title,
             listings.description,
             listings.price,
