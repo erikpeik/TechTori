@@ -171,4 +171,12 @@ def profile():
     user_id = session["user_id"]
     user_info = users.get_user_info(user_id)
     user_listings = listings.get_user_listings(user_id)
-    return render_template("own-profile.html", user=user_info, listings=user_listings)
+    return render_template("profile.html", user=user_info, listings=user_listings)
+
+@app.route("/profile/<int:user_id>")
+def user_profile(user_id):
+    user_info = users.get_user_info(user_id)
+    if not user_info:
+        abort(404)
+    user_listings = listings.get_user_listings(user_id)
+    return render_template("profile.html", user=user_info, listings=user_listings)

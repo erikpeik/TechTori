@@ -1,0 +1,15 @@
+{% extends "layout.html" %} {% block title %}Oma profiili - TechTori{% endblock
+%} {% block css %}
+<link rel="stylesheet" href="/static/css/profile.css" />
+{% endblock %} {% block content %} {% if user.id == session.user_id %}
+<div class="logout-container">
+  <a href="/logout" class="logout-button">Kirjaudu ulos</a>
+</div>
+{% endif %}
+
+<div class="profile-info">
+  <h1>{{ user.username }}</h1>
+  <hr />
+  {% include "listings.html" %}
+</div>
+{% endblock %}
