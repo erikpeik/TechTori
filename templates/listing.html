@@ -31,15 +31,21 @@
 
   <p><strong>Luotu:</strong> {{ listing.created_at }}</p>
   <p><strong>Myyjä:</strong> {{ listing.username }}</p>
-  {% if listing.user_id == session.get("user_id") %}
+
   <div class="actions">
+    {% if listing.user_id == session.get("user_id") %}
     <a href="/edit-listing/{{ listing.id }}" class="btn secondary"
       >Muokkaa ilmoitusta</a
     >
     <a href="/delete-listing/{{ listing.id }}" class="btn secondary"
       >Poista ilmoitus</a
     >
+    {% elif session.get("user_id") %}
+    <form action="/buy-listing/{{ listing.id }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+      <button type="submit" class="btn">Osta ilmoitus</button>
+    </form>
+    {% endif %}
   </div>
-  {% endif %}
 </div>
 {% endblock %}

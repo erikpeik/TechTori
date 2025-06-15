@@ -8,15 +8,15 @@
 <form method="post" action="/create-item">
   <div class="form-group">
     <label for="title">Otsikko</label>
-    <input type="text" id="title" name="title" required />
+    <input type="text" id="title" name="title" maxlength="100" required />
   </div>
   <div class="form-group">
     <label for="description">Kuvaus</label>
     <textarea
       id="description"
       name="description"
-      required
       maxlength="1000"
+      required
     ></textarea>
   </div>
   <div class="form-group">
@@ -26,12 +26,11 @@
       id="price"
       name="price"
       step="1"
-      required
       min="0"
       max="10000"
+      required
     />
   </div>
-
   <div class="form-group">
     <label for="category">Kategoria</label>
     <select id="category" name="category" required>
@@ -51,7 +50,6 @@
     </select>
   </div>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-
   <button type="submit" class="btn">Lähetä ilmoitus</button>
 </form>
 {% endblock %}

@@ -216,6 +216,17 @@ body {
   }
 }
 
+.is_sold {
+  background-color: #db5e5b;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #f5c6cb;
+  margin-top: 10px;
+}
+
 @media (max-width: 768px) {
   .listings {
     grid-template-columns: 1fr;

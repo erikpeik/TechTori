@@ -77,10 +77,10 @@ def update_listing(listing_id, title, description, price, condition_id, category
 def mark_listing_as_sold(listing_id):
     sql = """
     UPDATE listings
-    SET is_sold = TRUE
+    SET is_sold = TRUE, sold_by_user_id = ?
     WHERE id = ?
     """
-    db.execute_query(sql, (listing_id,))
+    db.execute_query(sql, (session["user_id"], listing_id))
 
 def delete_listing(listing_id):
     sql = """
@@ -98,7 +98,8 @@ def get_user_listings(user_id):
             listings.price,
             conditions.name AS condition,
             categories.name AS category,
-            listings.created_at
+            listings.created_at,
+            listings.is_sold
     FROM listings
     JOIN conditions ON listings.condition_id = conditions.id
     JOIN categories ON listings.category_id = categories.id

@@ -171,7 +171,7 @@ def delete_listing(listing_id):
         check_csrf()
         listings.delete_listing(listing_id)
         flash("Ilmoitus poistettu onnistuneesti", "success")
-        return redirect("/")
+        return redirect("/profile")
 
 @app.route("/profile")
 def profile():
@@ -203,3 +203,16 @@ def favorite_listing(listing_id):
         flash("Ilmoitus lisätty suosikkeihin", "success")
 
     return redirect(redirect_url)
+
+@app.route("/buy-listing/<int:listing_id>", methods=["POST"])
+def buy_listing(listing_id):
+    require_login()
+    check_csrf()
+
+    try:
+        listings.mark_listing_as_sold(listing_id)
+        flash("Ilmoitus merkitty myydyksi", "success")
+    except sqlite3.IntegrityError:
+        flash("Virhe: Ilmoituksen merkitseminen myydyksi epäonnistui", "error")
+
+    return redirect(f"/listing/{listing_id}")

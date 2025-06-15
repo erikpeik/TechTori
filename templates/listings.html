@@ -52,6 +52,9 @@
       <p><strong>Kategoria:</strong> {{ listing.category }}</p>
       <p><strong>Kunto:</strong> {{ listing.condition }}</p>
       <p><strong>Hinta:</strong> {{ listing.price }}€</p>
+      {% if listing.is_sold %}
+      <div class="is_sold">Myyty</div>
+      {% endif %}
     </div>
   </a>
   {% endfor %} {% endif %}

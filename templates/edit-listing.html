@@ -12,12 +12,13 @@ endblock %} {% block css %}
       id="title"
       name="title"
       value="{{ listing.title }}"
+      maxlength="100"
       required
     />
   </div>
   <div class="form-group">
     <label for="description">Kuvaus</label>
-    <textarea id="description" name="description" required>
+    <textarea id="description" name="description" maxlength="1000" required>
 {{ listing.description }}</textarea
     >
   </div>
@@ -28,10 +29,12 @@ endblock %} {% block css %}
       id="price"
       name="price"
       value="{{ listing.price }}"
+      step="1"
+      min="0"
+      max="10000"
       required
     />
   </div>
-
   <div class="form-group">
     <label for="category">Kategoria</label>
     <select id="category" name="category" required>

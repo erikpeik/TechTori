@@ -17,8 +17,11 @@ CREATE TABLE listings (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_sold BOOLEAN DEFAULT FALSE,
+    sold_by_user_id INTEGER,
+    FOREIGN KEY (sold_by_user_id) REFERENCES users(id),
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (condition_id) REFERENCES conditions(id)
+    FOREIGN KEY (condition_id) REFERENCES conditions(id),
+    FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
 CREATE TABLE favorites (

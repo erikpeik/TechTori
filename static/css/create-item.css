@@ -28,7 +28,7 @@
   min-height: 100px;
   max-height: 250px;
   resize: vertical;
-  field-sizing: normal;
+  field-sizing: content;
   font-family: Arial, sans-serif;
 }
 
