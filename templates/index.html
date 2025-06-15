@@ -4,9 +4,23 @@ block content %} {% if session.username %}
 {% else %}
 <h1>Tervetuloa TechToriin!</h1>
 {% endif %}
-<ul>
+<div class="listings">
   {% for listing in listings %}
-  <li>{{ listing.title }}</li>
+  <div class="listing">
+    <div>
+      <h3>{{ listing.title }}</h3>
+
+      <p>
+        {{ listing.description[:150] }}{% if listing.description|length > 150
+        %}...{% endif %}
+      </p>
+    </div>
+    <div>
+      <p><strong>Kategoria:</strong> {{ listing.category }}</p>
+      <p><strong>Kunto:</strong> {{ listing.condition }}</p>
+      <p><strong>Hinta:</strong> {{ listing.price }}€</p>
+    </div>
+  </div>
   {% endfor %}
-</ul>
+</div>
 {% endblock %}
