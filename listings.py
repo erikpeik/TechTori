@@ -84,3 +84,19 @@ def delete_listing(listing_id):
     WHERE id = ?
     """
     db.execute_query(sql, (listing_id,))
+
+def get_user_listings(user_id):
+    sql = """
+    SELECT  listings.id,
+            listings.title,
+            listings.description,
+            listings.price,
+            conditions.name AS condition,
+            categories.name AS category,
+            listings.created_at
+    FROM listings
+    JOIN conditions ON listings.condition_id = conditions.id
+    JOIN categories ON listings.category_id = categories.id
+    WHERE listings.user_id = ?
+    """
+    return db.fetch_query(sql, (user_id,))

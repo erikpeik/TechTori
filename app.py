@@ -164,3 +164,11 @@ def delete_listing(listing_id):
         listings.delete_listing(listing_id)
         flash("Ilmoitus poistettu onnistuneesti", "success")
         return redirect("/")
+
+@app.route("/profile")
+def profile():
+    require_login()
+    user_id = session["user_id"]
+    user_info = users.get_user_info(user_id)
+    user_listings = listings.get_user_listings(user_id)
+    return render_template("own-profile.html", user=user_info, listings=user_listings)

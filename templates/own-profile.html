@@ -1,0 +1,28 @@
+{% extends "layout.html" %} {% block title %}Oma profiili - TechTori{% endblock
+%} {% block css %}
+<link rel="stylesheet" href="/static/css/profile.css" />
+{% endblock %} {% block content %}
+<div class="logout-container">
+  <a href="/logout" class="logout-button">Kirjaudu ulos</a>
+</div>
+<div class="profile-info">
+  <h1>{{ user.username }}</h1>
+  <hr />
+  <div class="listings">
+    {% for listing in listings %}
+    <a class="listing" href="/listing/{{ listing.id }}">
+      <div>
+        <h3>{{ listing.title }}</h3>
+        <p>{{ listing.description }}</p>
+      </div>
+      <div>
+        <p><strong>Hinta:</strong> {{ listing.price }} €</p>
+        <p><strong>Kunto:</strong> {{ listing.condition }}</p>
+        <p><strong>Kategoria:</strong> {{ listing.category }}</p>
+        <p><strong>Lisätty:</strong> {{ listing.created_at }}</p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

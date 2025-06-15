@@ -2,18 +2,28 @@
 <html>
   <head>
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="/static/main.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
     {% block css %}{% endblock %}
   </head>
   <body>
     <div class="header">
-      <a href="/" class="title" title="Etusivu">TechTori</a>
+      <a href="/" class="title" title="Etusivu"><h3>TechTori</h3></a>
       <div class="header-links">
         {% if session.user_id %}
-        <a href="/create-item">Luo ilmoitus</a> |
-        <a href="/logout">Kirjaudu ulos</a>{% else %}
-        <a href="/login">Kirjaudu sisään</a> |
-        <a href="/register">Luo tunnus</a>{% endif %}
+        <a href="/create-item"
+          ><img src="/static/img/plus-circled.svg" /><span
+            >Luo ilmoitus</span
+          ></a
+        >
+        <a href="/profile"
+          ><img src="/static/img/avatar.svg" /><span>Oma profiili</span></a
+        >{% else %}
+        <a href="/register"
+          ><img src="/static/img/pencil-2.svg" /><span>Luo tili</span></a
+        >
+        <a href="/login"
+          ><img src="/static/img/avatar.svg" /><span>Kirjaudu sisään</span></a
+        >{% endif %}
       </div>
     </div>
     {% with messages = get_flashed_messages(with_categories=true) %} {% if

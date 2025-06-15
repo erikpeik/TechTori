@@ -23,3 +23,10 @@ def authenticate_user(username, password):
         return user_id
 
     return None
+
+def get_user_info(user_id):
+    sql = "SELECT id, username, created_at FROM users WHERE id = ?"
+    result = db.fetch_query(sql, (user_id,))
+    if not result:
+        return None
+    return result[0]

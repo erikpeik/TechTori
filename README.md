@@ -5,7 +5,7 @@ Yksinkertainen markkinapaikka tietokonekomponenttien ostamiseen ja myymiseen. Lu
 ## Sovelluksen toiminta
 
 - [x] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään.
-- [ ] Käyttäjä pystyy luomaan ilmoituksen, muokkaamaan ja poistamaan sen.
+- [x] Käyttäjä pystyy luomaan ilmoituksen, muokkaamaan ja poistamaan sen.
 - [ ] Käyttäjä pystyy selaamaan ilmoituksia ja etsimään tiettyjä osia.
 - [ ] Käyttäjä pystyy lisäämään ilmoituksia suosikkeihin.
 - [ ] Sovelluksessa on käyttäjäsivut, jossa näkyvät käyttäjän ilmoitukset.
@@ -32,3 +32,7 @@ Käynnistä sovellus:
 ```bash
 flask run
 ```
+
+## Credits
+
+Ikonit ladattu [Radix UI Icons](https://www.radix-ui.com/icons) -kirjastosta. (MIT License)
