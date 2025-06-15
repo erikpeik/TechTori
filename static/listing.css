@@ -1,0 +1,32 @@
+.listing-details {
+  .listing-price {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    width: fit-content;
+
+    div {
+      font-size: 24px;
+      font-weight: bold;
+      color: #db5e5b;
+    }
+    p {
+      margin: 0;
+
+      font-size: 16px;
+    }
+  }
+
+  .info {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+
+    span {
+      padding: 10px;
+      border-radius: 9999px;
+      margin: 10px 0;
+      border: 1px solid #bebebe;
+    }
+  }
+}

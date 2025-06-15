@@ -1,9 +1,9 @@
 {% extends "layout.html" %} {% block title %}Uusi ilmoitus - TechTori{% endblock
-%} {% block content %} {% block css %}
+%} {% block css %}
 <link rel="stylesheet" href="/static/create-item.css" />
-{% endblock %}
-
+{% endblock %} {% block content %}
 <h1>Uusi ilmoitus</h1>
+
 <hr />
 <form method="post" action="/create-item">
   <div class="form-group">
@@ -31,6 +31,7 @@
       max="10000"
     />
   </div>
+
   <div class="form-group">
     <label for="category">Kategoria:</label>
     <select id="category" name="category" required>
@@ -52,5 +53,5 @@
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
 
   <button type="submit">Lähetä ilmoitus</button>
-  {% endblock %}
 </form>
+{% endblock %}

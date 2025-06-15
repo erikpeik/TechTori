@@ -96,6 +96,7 @@ body {
     margin-top: 10px;
     color: #333;
   }
+  text-decoration: none;
 }
 
 .listing:hover {

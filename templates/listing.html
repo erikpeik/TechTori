@@ -1,0 +1,21 @@
+{% extends "layout.html" %} {% block title %}Ilmoitus - TechTori{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="/static/listing.css" />
+{% endblock %} {% block content %}
+<h1>{{ listing.title }}</h1>
+<div class="listing-details">
+  <div class="listing-price">
+    <p>Myydään</p>
+    <div>{{ listing.price }} €</div>
+  </div>
+  <hr />
+  <div class="info">
+    <span>Kategoria: <strong>{{ listing.category }}</strong></span>
+    <span>Kunto: <strong>{{ listing.condition }}</strong></span>
+  </div>
+  <p>{{ listing.description }}</p>
+
+  <p><strong>Luotu:</strong> {{ listing.created_at }}</p>
+
+  {% endblock %}
+</div>

@@ -116,3 +116,10 @@ def create_item():
             return redirect("/create-item")
         flash("Ilmoitus luotu onnistuneesti", "success")
         return redirect("/")
+
+@app.route("/listing/<int:listing_id>")
+def listing_detail(listing_id):
+    listing = listings.get_listing(listing_id)
+    if not listing:
+        abort(404)
+    return render_template("listing.html", listing=listing)
