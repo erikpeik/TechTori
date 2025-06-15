@@ -1,9 +1,3 @@
-DROP TABLE IF EXISTS listings_categories;
-DROP TABLE IF EXISTS listings;
-DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS conditions;
-DROP TABLE IF EXISTS users;
-
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
@@ -21,10 +15,11 @@ CREATE TABLE listings (
     user_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     description TEXT,
-    price REAL NOT NULL,
+    price INTEGER NOT NULL,
     condition_id INTEGER NOT NULL,
     category_id INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (condition_id) REFERENCES conditions(id)
@@ -37,3 +32,13 @@ CREATE TABLE categories (
 
 CREATE INDEX idx_listing_title ON listings(title);
 CREATE INDEX idx_category_name ON categories(name);
+
+
+CREATE TRIGGER update_updated_at
+AFTER UPDATE ON listings
+FOR EACH ROW
+BEGIN
+    UPDATE listings
+    SET updated_at = CURRENT_TIMESTAMP
+    WHERE id = OLD.id;
+END;

@@ -16,6 +16,16 @@
   <p>{{ listing.description }}</p>
 
   <p><strong>Luotu:</strong> {{ listing.created_at }}</p>
-
-  {% endblock %}
+  <p><strong>Myyjä:</strong> {{ listing.username }}</p>
+  {% if listing.user_id == session.get("user_id") %}
+  <div class="actions">
+    <a href="/edit-listing/{{ listing.id }}" class="btn secondary"
+      >Muokkaa ilmoitusta</a
+    >
+    <a href="/delete-listing/{{ listing.id }}" class="btn secondary"
+      >Poista ilmoitus</a
+    >
+  </div>
+  {% endif %}
 </div>
+{% endblock %}

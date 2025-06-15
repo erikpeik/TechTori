@@ -7,11 +7,11 @@
 <hr />
 <form method="post" action="/create-item">
   <div class="form-group">
-    <label for="title">Otsikko:</label>
+    <label for="title">Otsikko</label>
     <input type="text" id="title" name="title" required />
   </div>
   <div class="form-group">
-    <label for="description">Kuvaus:</label>
+    <label for="description">Kuvaus</label>
     <textarea
       id="description"
       name="description"
@@ -20,12 +20,12 @@
     ></textarea>
   </div>
   <div class="form-group">
-    <label for="price">Hinta (€):</label>
+    <label for="price">Hinta (€)</label>
     <input
       type="number"
       id="price"
       name="price"
-      step="0.01"
+      step="1"
       required
       min="0"
       max="10000"
@@ -33,7 +33,7 @@
   </div>
 
   <div class="form-group">
-    <label for="category">Kategoria:</label>
+    <label for="category">Kategoria</label>
     <select id="category" name="category" required>
       <option value="" disabled selected>Valitse kategoria</option>
       {% for category in categories %}
@@ -42,7 +42,7 @@
     </select>
   </div>
   <div class="form-group">
-    <label for="condition">Kunto:</label>
+    <label for="condition">Kunto</label>
     <select id="condition" name="condition" required>
       <option value="" disabled selected>Valitse kunto</option>
       {% for condition in conditions %}
@@ -52,6 +52,6 @@
   </div>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
 
-  <button type="submit">Lähetä ilmoitus</button>
+  <button type="submit" class="btn">Lähetä ilmoitus</button>
 </form>
 {% endblock %}

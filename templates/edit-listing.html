@@ -1,0 +1,62 @@
+{% extends "layout.html" %} {% block title %}Muokkaa ilmoitusta - TechTori{%
+endblock %} {% block css %}
+<link rel="stylesheet" href="/static/create-item.css" />
+{% endblock %} {% block content %}
+<h1>Muokkaa ilmoitusta</h1>
+<hr />
+<form action="/edit-listing/{{ listing.id }}" method="post">
+  <div class="form-group">
+    <label for="title">Otsikko</label>
+    <input
+      type="text"
+      id="title"
+      name="title"
+      value="{{ listing.title }}"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="description">Kuvaus</label>
+    <textarea id="description" name="description" required>
+{{ listing.description }}</textarea
+    >
+  </div>
+  <div class="form-group">
+    <label for="price">Hinta (€)</label>
+    <input
+      type="number"
+      id="price"
+      name="price"
+      value="{{ listing.price }}"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="category">Kategoria</label>
+    <select id="category" name="category" required>
+      <option value="">Valitse kategoria</option>
+      {% for category in categories %} {% if category['id'] ==
+      listing.category_id %}
+      <option value="{{ category.id }}" selected>{{ category.name }}</option>
+      {% else %}
+      <option value="{{ category.id }}">{{ category.name }}</option>
+      {% endif %} {% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="condition">Kunto</label>
+    <select id="condition" name="condition" required>
+      <option value="">Valitse kunto</option>
+      {% for condition in conditions %} {% if condition['id'] ==
+      listing.condition_id %}
+      <option value="{{ condition.id }}" selected>{{ condition.name }}</option>
+      {% else %}
+      <option value="{{ condition.id }}">{{ condition.name }}</option>
+      {% endif %} {% endfor %}
+    </select>
+  </div>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+  <button type="submit" class="btn">Tallenna muutokset</button>
+</form>
+{% endblock %}

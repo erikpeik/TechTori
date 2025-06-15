@@ -9,7 +9,6 @@ block content %} {% if session.username %}
   <a class="listing" href="/listing/{{ listing.id }}">
     <div>
       <h3>{{ listing.title }}</h3>
-
       <p>
         {{ listing.description[:150] }}{% if listing.description|length > 150
         %}...{% endif %}
@@ -20,7 +19,7 @@ block content %} {% if session.username %}
       <p><strong>Kunto:</strong> {{ listing.condition }}</p>
       <p><strong>Hinta:</strong> {{ listing.price }}€</p>
     </div>
-</a>
+  </a>
   {% endfor %}
 </div>
 {% endblock %}

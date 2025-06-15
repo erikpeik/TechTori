@@ -1,0 +1,18 @@
+{% extends "layout.html" %} {% block title %}Poista ilmoitus - TechTori{%
+endblock %} {% block css %}
+<link rel="stylesheet" href="/static/create-item.css" />
+{% endblock %} {% block content %}
+<h1>Poista ilmoitus</h1>
+<hr />
+<p>
+  Oletko varma, että haluat poistaa ilmoituksen
+  <strong>{{ listing.title }}</strong>?
+</p>
+<form action="/delete-listing/{{ listing.id }}" method="post" class="actions">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+
+  <a href="/listing/{{ listing.id }}" class="btn secondary">Peruuta</a>
+  <button type="submit" class="btn">Poista</button>
+</form>
+
+{% endblock %}

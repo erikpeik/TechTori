@@ -41,6 +41,8 @@ def get_listing(listing_id):
             listings.price,
             conditions.name AS condition,
             categories.name AS category,
+            listings.category_id,
+            listings.condition_id,
             listings.created_at,
             listings.is_active
     FROM listings
@@ -59,11 +61,26 @@ def get_listing(listing_id):
         res['created_at'] = dt.strftime('%d.%m.%Y %H:%M:%S')
     return res
 
+def update_listing(listing_id, title, description, price, condition_id, category_id):
+    sql = """
+    UPDATE listings
+    SET title = ?, description = ?, price = ?, condition_id = ?, category_id = ?
+    WHERE id = ?
+    """
+    db.execute_query(sql, (title, description, price, condition_id, category_id, listing_id))
+
 
 def mark_listing_as_sold(listing_id):
     sql = """
     UPDATE listings
     SET is_active = 0
+    WHERE id = ?
+    """
+    db.execute_query(sql, (listing_id,))
+
+def delete_listing(listing_id):
+    sql = """
+    DELETE FROM listings
     WHERE id = ?
     """
     db.execute_query(sql, (listing_id,))

@@ -1,6 +1,3 @@
-DELETE FROM conditions;
-DELETE FROM categories;
-
 INSERT INTO conditions (name) VALUES ('Uusi');
 INSERT INTO conditions (name) VALUES ('Hyvä');
 INSERT INTO conditions (name) VALUES ('Kohtalainen');

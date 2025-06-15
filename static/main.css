@@ -6,7 +6,8 @@ body {
 }
 
 .flashes {
-  padding: 10px;
+  padding: 0;
+  margin: 10px;
 
   li {
     list-style: none;
@@ -19,8 +20,15 @@ body {
     color: #721c24;
     padding: 10px;
     border-radius: 5px;
-    margin: 10px 0;
     border: 1px solid #f5c6cb;
+  }
+
+  .success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #c3e6cb;
   }
 }
 
@@ -97,11 +105,39 @@ body {
     color: #333;
   }
   text-decoration: none;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #f0f0f2;
+  }
 }
 
-.listing:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background-color: #f0f0f2;
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  background-color: #db5e5b;
+  padding: 8px 16px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #c54a48;
+  }
+}
+
+.btn.secondary {
+  background-color: #fff;
+  color: #296dcc;
+  border: 2px solid #bbb;
+  box-sizing: border-box;
+
+  &:hover {
+    background-color: #f0f0f2;
+  }
 }
 
 @media (max-width: 768px) {
