@@ -4,7 +4,7 @@
 {% endblock %} {% block content %}
 <div class="title-row">
   <h1>{{ listing.title }}</h1>
-  {% if session.user_id != listing.user_id %}
+  {% if session.user_id and session.user_id != listing.user_id %}
   <form action="/favorite/{{ listing.id }}" method="post">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <input type="hidden" name="redirect" value="{{ request.path }}" />

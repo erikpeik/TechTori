@@ -12,4 +12,7 @@
   <hr />
   {% include "listings.html" %}
 </div>
-{% endblock %}
+{% if user.id == session.user_id %}
+<hr />
+<h2 class="center-text">Suosikit</h2>
+{% endif %}{% endblock %}

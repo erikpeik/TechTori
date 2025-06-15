@@ -3,34 +3,56 @@
   {% if not listings %}
   <p>Ei ilmoituksia saatavilla.</p>
   {% else %} {% for listing in listings %}
-  <div class="listing">
-    <a href="/listing/{{ listing.id }}" class="listing-body">
-      <div>
+  <a href="/listing/{{ listing.id }}" class="listing">
+    <div class="listing-body">
+      <div class="title-row">
         <h3>{{ listing.title }}</h3>
-        <p>
-          {{ listing.description[:150] }}{% if listing.description|length > 150
-          %}...{% endif %}
-        </p>
-      </div>
-      <div>
-        <p><strong>Kategoria:</strong> {{ listing.category }}</p>
-        <p><strong>Kunto:</strong> {{ listing.condition }}</p>
-        <p><strong>Hinta:</strong> {{ listing.price }}€</p>
-      </div></a
-    >
-    {% if session.user_id|int != listing.user_id %}
-    <form action="/favorite/{{ listing.id }}" method="post">
-      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-      <input type="hidden" name="redirect" value="{{ request.path }}" />
-      <button type="submit" class="favorite-button">
-        {% if listing.is_favorited %}
-        <img src="/static/img/heart-filled.svg" color="red" />
-        {% else %}
-        <img src="/static/img/heart.svg" color="red" />
+        {% if session.user_id and session.user_id != listing.user_id %}
+        <form action="/favorite/{{ listing.id }}" method="post">
+          <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ session.csrf_token }}"
+          />
+          <input type="hidden" name="redirect" value="{{ request.path }}" />
+          {% if listing.is_favorited %}
+          <button
+            type="submit"
+            class="favorite-button"
+            title="Lisää suosikkeihin"
+          >
+            <img
+              src="/static/img/heart-filled.svg"
+              color="red"
+              alt="Lisää suosikkeihin"
+            />
+          </button>
+          {% else %}
+          <button
+            type="submit"
+            class="favorite-button"
+            title="Poista suosikeista"
+          >
+            <img
+              src="/static/img/heart.svg"
+              color="red"
+              alt="Poista suosikeista"
+            />
+          </button>
+          {% endif %}
+        </form>
         {% endif %}
-      </button>
-    </form>
-    {% endif %}
-  </div>
+      </div>
+      <p>
+        {{ listing.description[:150] }}{% if listing.description|length > 150
+        %}...{% endif %}
+      </p>
+    </div>
+    <div class="listing-body">
+      <p><strong>Kategoria:</strong> {{ listing.category }}</p>
+      <p><strong>Kunto:</strong> {{ listing.condition }}</p>
+      <p><strong>Hinta:</strong> {{ listing.price }}€</p>
+    </div>
+  </a>
   {% endfor %} {% endif %}
 </div>

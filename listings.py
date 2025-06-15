@@ -15,12 +15,12 @@ def get_listings():
             conditions.name AS condition,
             categories.name AS category,
             listings.created_at,
-            listings.is_active
+            listings.is_sold
     FROM listings
     JOIN users ON listings.user_id = users.id
     JOIN conditions ON listings.condition_id = conditions.id
     JOIN categories ON listings.category_id = categories.id
-    WHERE listings.user_id IS NOT ?
+    WHERE listings.user_id IS NOT ? AND listings.is_sold = FALSE
     """
     return db.fetch_query(sql, (user_id,))
 
@@ -48,7 +48,7 @@ def get_listing(listing_id):
             listings.category_id,
             listings.condition_id,
             listings.created_at,
-            listings.is_active
+            listings.is_sold
     FROM listings
     JOIN users ON listings.user_id = users.id
     JOIN conditions ON listings.condition_id = conditions.id
@@ -77,7 +77,7 @@ def update_listing(listing_id, title, description, price, condition_id, category
 def mark_listing_as_sold(listing_id):
     sql = """
     UPDATE listings
-    SET is_active = 0
+    SET is_sold = TRUE
     WHERE id = ?
     """
     db.execute_query(sql, (listing_id,))
