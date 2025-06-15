@@ -23,12 +23,6 @@ pip install flask
 Luodaan tietokanta taulu ja alustetaan se alkutiedoilla:
 
 ```bash
-python3 initialize_database.py
-```
-
-tai vaihtoehtoisesti:
-
-```bash
 sqlite3 database.db < schema.sql
 sqlite3 database.db < init.sql
 ```
