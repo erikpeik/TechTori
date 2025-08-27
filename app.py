@@ -122,6 +122,25 @@ def create_item():
             flash("Virhe: Kaikki kentät ovat pakollisia", "error")
             return redirect("/create-item")
 
+        if len(title) > 100:
+            flash("Virhe: Otsikon maksimipituus on 100 merkkiä", "error")
+            return redirect("/create-item")
+
+        if len(description) > 1000:
+            flash("Virhe: Kuvauksen maksimipituus on 1000 merkkiä", "error")
+            return redirect("/create-item")
+
+        if int(price) < 0 or int(price) > 10000:
+            flash("Virhe: Hinta ei voi olla negatiivinen tai yli 10 000€", "error")
+            return redirect("/create-item")
+
+        condition = conditions.get_condition_by_id(condition_id)
+        category = categories.get_category_by_id(category_id)
+
+        if not condition or not category:
+            flash("Virhe: Valittu kunto tai kategoria on virheellinen", "error")
+            return redirect("/create-item")
+
         listings.add_listing(
             session["user_id"], title, description, price, condition_id, category_id)
 
