@@ -1,0 +1,60 @@
+<hr />
+<h2 class="center-text">Suosikit</h2>
+<div class="listings">
+  {% for listing in favorites %}
+  <a href="/listing/{{ listing.id }}" class="listing">
+    <div class="listing-body">
+      <div class="title-row">
+        <h3>{{ listing.title }}</h3>
+        {% if session.user_id and session.user_id != listing.user_id %}
+        <form action="/favorite/{{ listing.id }}" method="post">
+          <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ session.csrf_token }}"
+          />
+          <input type="hidden" name="redirect" value="{{ request.path }}" />
+          {% if listing.is_favorited %}
+          <button
+            type="submit"
+            class="favorite-button"
+            title="Lisää suosikkeihin"
+          >
+            <img
+              src="/static/img/heart-filled.svg"
+              color="red"
+              alt="Lisää suosikkeihin"
+            />
+          </button>
+          {% else %}
+          <button
+            type="submit"
+            class="favorite-button"
+            title="Poista suosikeista"
+          >
+            <img
+              src="/static/img/heart.svg"
+              color="red"
+              alt="Poista suosikeista"
+            />
+          </button>
+          {% endif %}
+        </form>
+        {% endif %}
+      </div>
+      <p>
+        {{ listing.description[:150] }}{% if listing.description|length > 150
+        %}...{% endif %}
+      </p>
+    </div>
+    <div class="listing-body">
+      <p><strong>Kategoria:</strong> {{ listing.category }}</p>
+      <p><strong>Kunto:</strong> {{ listing.condition }}</p>
+      <p><strong>Hinta:</strong> {{ listing.price }}€</p>
+      {% if listing.is_sold %}
+      <div class="is_sold">Myyty</div>
+      {% endif %}
+    </div>
+  </a>
+  {% endfor %}
+</div>

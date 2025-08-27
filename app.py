@@ -230,7 +230,9 @@ def profile():
     user_id = session["user_id"]
     user_info = users.get_user_info(user_id)
     user_listings = listings.get_user_listings(user_id)
-    return render_template("profile.html", user=user_info, listings=user_listings)
+    user_favorites = users.get_favorites(user_id)
+
+    return render_template("profile.html", user=user_info, listings=user_listings, favorites=user_favorites)
 
 
 @app.route("/profile/<int:user_id>")

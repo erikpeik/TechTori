@@ -39,3 +39,23 @@ def get_user_by_username(username):
     if not result:
         return None
     return result[0]
+
+
+def get_favorites(user_id):
+    sql = """
+        SELECT
+            l.id,
+            l.title,
+            l.description,
+            l.price,
+            l.condition_id,
+            l.category_id,
+            l.user_id,
+            l.is_sold,
+            l.created_at,
+            f.created_at
+        FROM favorites f
+        JOIN listings l ON f.listing_id = l.id
+        WHERE f.user_id = ?;
+    """
+    return db.fetch_query(sql, (user_id,))
