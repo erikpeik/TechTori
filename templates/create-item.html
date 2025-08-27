@@ -7,11 +7,17 @@
 <hr />
 <form method="post" action="/create-item">
   <div class="form-group">
-    <label for="title">Otsikko</label>
+    <label for="title"
+      >Otsikko
+      <p class="required">*</p></label
+    >
     <input type="text" id="title" name="title" maxlength="100" required />
   </div>
   <div class="form-group">
-    <label for="description">Kuvaus</label>
+    <label for="description"
+      >Kuvaus
+      <p class="required">*</p></label
+    >
     <textarea
       id="description"
       name="description"
@@ -20,7 +26,10 @@
     ></textarea>
   </div>
   <div class="form-group">
-    <label for="price">Hinta (€)</label>
+    <label for="price"
+      >Hinta (€)
+      <p class="required">*</p></label
+    >
     <input
       type="number"
       id="price"
@@ -32,7 +41,10 @@
     />
   </div>
   <div class="form-group">
-    <label for="category">Kategoria</label>
+    <label for="category"
+      >Kategoria
+      <p class="required">*</p></label
+    >
     <select id="category" name="category" required>
       <option value="" disabled selected>Valitse kategoria</option>
       {% for category in categories %}
@@ -41,7 +53,10 @@
     </select>
   </div>
   <div class="form-group">
-    <label for="condition">Kunto</label>
+    <label for="condition"
+      >Kunto
+      <p class="required">*</p></label
+    >
     <select id="condition" name="condition" required>
       <option value="" disabled selected>Valitse kunto</option>
       {% for condition in conditions %}

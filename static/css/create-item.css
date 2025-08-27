@@ -2,10 +2,16 @@
   margin-bottom: 1rem;
 }
 .form-group label {
-  display: block;
+  display: flex;
   margin-bottom: 0.25rem;
   font-weight: 600;
   font-size: 14px;
+
+  p.required {
+    color: red;
+    margin: 0;
+    margin-left: 2px;
+  }
 }
 
 .form-group input,

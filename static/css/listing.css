@@ -12,7 +12,6 @@
     }
     p {
       margin: 0;
-
       font-size: 16px;
     }
   }
@@ -35,4 +34,8 @@
     gap: 10px;
     margin-top: 20px;
   }
+}
+
+.listing-description {
+  word-wrap: break-word;
 }
