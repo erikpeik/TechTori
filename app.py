@@ -213,6 +213,10 @@ def delete_listing(listing_id):
 
     if request.method == "POST":
         check_csrf()
+        listing = listings.get_listing(listing_id)
+        if not listing or listing["user_id"] != session["user_id"]:
+            abort(403)
+
         listings.delete_listing(listing_id)
         flash("Ilmoitus poistettu onnistuneesti", "success")
         return redirect("/profile")

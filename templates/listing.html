@@ -45,11 +45,13 @@
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
       <button type="submit" class="btn">Myynnin peruminen</button>
     </form>
-    {% endif %} {% elif session.get("user_id") %}
+    {% endif %} {% elif session.get("user_id") and not is_sold %}
     <form action="/buy-listing/{{ listing.id }}" method="post">
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
       <button type="submit" class="btn">Osta ilmoitus</button>
     </form>
+    {% else %}
+    <p class="is_sold">Ilmoitus on myyty.</p>
     {% endif %}
   </div>
 </div>
