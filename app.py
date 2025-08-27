@@ -27,7 +27,9 @@ def check_csrf():
 @app.route("/")
 def index():
     listings_list = listings.get_listings()
-    return render_template("index.html",  listings=listings_list)
+    categories_list = categories.get_categories()
+    conditions_list = conditions.get_conditions()
+    return render_template("index.html",  listings=listings_list, categories=categories_list, conditions=conditions_list)
 
 
 @app.route("/register", methods=["GET", "POST"])

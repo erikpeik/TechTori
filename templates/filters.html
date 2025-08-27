@@ -1,0 +1,40 @@
+{% block css %}
+<link rel="stylesheet" href="/static/css/filters.css" />
+{% endblock %}
+<form method="GET" action="/">
+  <div class="filter-container">
+    <input
+      type="text"
+      name="search"
+      placeholder="Hae ilmoituksia..."
+      value="{{ request.args.get('search', '') }}"
+      class="input-search"
+    />
+    <div class="filter-select">
+      <select name="category">
+        <option value="">Kaikki kategoriat</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}"
+        {% if category.id|string  == request.args.get('category') %}selected{% endif %}
+        >{{ category.name }}</option>
+        {% endfor %}
+      </select>
+      <select name="condition">
+        <option value="">Kaikki kunnot</option>
+        {% for condition in conditions %}
+        <option value="{{ condition.id }}"
+        {% if condition.id|string  == request.args.get('condition') %}selected{% endif %}
+        >{{ condition.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filter-actions">
+      <div class="checkbox-container">
+        <input type="checkbox" id="exclude-owned" name="exclude-owned"
+        {% if request.args.get('exclude-owned') %}checked{% endif %} />
+        <label for="exclude-owned">Älä näytä omia ilmoituksia</label>
+      </div>
+      <button type="submit" class="btn">Hae</button>
+    </div>
+  </div>
+</form>
