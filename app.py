@@ -27,12 +27,6 @@ def check_csrf():
 @app.route("/")
 def index():
     listings_list = listings.get_listings()
-    favorites_list = favorites.get_favorited_ids()
-
-    listings_list = [dict(listing) for listing in listings_list]
-    for listing in listings_list:
-        listing["is_favorited"] = listing["id"] in favorites_list
-
     return render_template("index.html",  listings=listings_list)
 
 

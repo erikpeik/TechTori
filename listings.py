@@ -15,14 +15,16 @@ def get_listings():
             conditions.name AS condition,
             categories.name AS category,
             listings.created_at,
-            listings.is_sold
+            listings.is_sold,
+            CASE WHEN favorites.id IS NOT NULL THEN TRUE ELSE FALSE END AS is_favorited
     FROM listings
     JOIN users ON listings.user_id = users.id
     JOIN conditions ON listings.condition_id = conditions.id
     JOIN categories ON listings.category_id = categories.id
+    LEFT JOIN favorites ON favorites.listing_id = listings.id AND favorites.user_id = ?
     WHERE listings.user_id IS NOT ? AND listings.is_sold = FALSE
     """
-    return db.fetch_query(sql, (user_id,))
+    return db.fetch_query(sql, (user_id, user_id,))
 
 
 def add_listing(user_id, title, description, price, condition_id, category_id):

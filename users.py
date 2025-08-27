@@ -48,14 +48,18 @@ def get_favorites(user_id):
             l.title,
             l.description,
             l.price,
+            cond.name AS condition,
+            cat.name AS category,
             l.condition_id,
             l.category_id,
             l.user_id,
             l.is_sold,
             l.created_at,
-            f.created_at
+            1 AS is_favorited
         FROM favorites f
         JOIN listings l ON f.listing_id = l.id
+        JOIN conditions cond ON l.condition_id = cond.id
+        JOIN categories cat ON l.category_id = cat.id
         WHERE f.user_id = ?;
     """
     return db.fetch_query(sql, (user_id,))
