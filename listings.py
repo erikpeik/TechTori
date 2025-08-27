@@ -25,7 +25,6 @@ def get_listings():
     return db.fetch_query(sql, (user_id,))
 
 
-
 def add_listing(user_id, title, description, price, condition_id, category_id):
     sql = """
     INSERT INTO listings (user_id, title, description, price, condition_id, category_id)
@@ -34,6 +33,7 @@ def add_listing(user_id, title, description, price, condition_id, category_id):
     db.execute_query(sql, (user_id, title, description,
                      price, condition_id, category_id))
     return db.last_insert_id()
+
 
 def get_listing(listing_id):
     sql = """
@@ -65,13 +65,15 @@ def get_listing(listing_id):
         res['created_at'] = dt.strftime('%d.%m.%Y %H:%M:%S')
     return res
 
+
 def update_listing(listing_id, title, description, price, condition_id, category_id):
     sql = """
     UPDATE listings
     SET title = ?, description = ?, price = ?, condition_id = ?, category_id = ?
     WHERE id = ?
     """
-    db.execute_query(sql, (title, description, price, condition_id, category_id, listing_id))
+    db.execute_query(sql, (title, description, price,
+                     condition_id, category_id, listing_id))
 
 
 def mark_listing_as_sold(listing_id):
@@ -82,12 +84,23 @@ def mark_listing_as_sold(listing_id):
     """
     db.execute_query(sql, (session["user_id"], listing_id))
 
+
+def mark_listing_as_unsold(listing_id):
+    sql = """
+    UPDATE listings
+    SET is_sold = FALSE, sold_by_user_id = NULL
+    WHERE id = ?
+    """
+    db.execute_query(sql, (listing_id,))
+
+
 def delete_listing(listing_id):
     sql = """
     DELETE FROM listings
     WHERE id = ?
     """
     db.execute_query(sql, (listing_id,))
+
 
 def get_user_listings(user_id):
     sql = """
@@ -106,3 +119,13 @@ def get_user_listings(user_id):
     WHERE listings.user_id = ?
     """
     return db.fetch_query(sql, (user_id,))
+
+
+def is_listing_sold(listing_id):
+    sql = """
+    SELECT is_sold
+    FROM listings
+    WHERE id = ?
+    """
+    res = db.fetch_query(sql, (listing_id,))
+    return res[0]["is_sold"] if res else None

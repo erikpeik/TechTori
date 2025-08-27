@@ -19,7 +19,7 @@
 
 <div class="listing-details">
   <div class="listing-price">
-    <p>Myydään</p>
+    <p>{% if is_sold %}Myyty hinnalla {% else %}Myydään{% endif %}</p>
     <div>{{ listing.price }} €</div>
   </div>
   <hr />
@@ -40,7 +40,12 @@
     <a href="/delete-listing/{{ listing.id }}" class="btn secondary"
       >Poista ilmoitus</a
     >
-    {% elif session.get("user_id") %}
+    {% if is_sold %}
+    <form action="/unsell-listing/{{ listing.id }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+      <button type="submit" class="btn">Myynnin peruminen</button>
+    </form>
+    {% endif %} {% elif session.get("user_id") %}
     <form action="/buy-listing/{{ listing.id }}" method="post">
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
       <button type="submit" class="btn">Osta ilmoitus</button>

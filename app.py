@@ -152,9 +152,10 @@ def create_item():
 def listing_detail(listing_id):
     listing = listings.get_listing(listing_id)
     is_favorited = favorites.is_favorited(listing_id)
+    is_sold = listings.is_listing_sold(listing_id)
     if not listing:
         abort(404)
-    return render_template("listing.html", listing=listing, is_favorited=is_favorited)
+    return render_template("listing.html", listing=listing, is_favorited=is_favorited, is_sold=is_sold)
 
 
 @app.route("/edit-listing/<int:listing_id>", methods=["GET", "POST"])
@@ -264,5 +265,21 @@ def buy_listing(listing_id):
 
     listings.mark_listing_as_sold(listing_id)
     flash("Ilmoitus merkitty myydyksi", "success")
+
+    return redirect(f"/listing/{listing_id}")
+
+
+@app.route("/unsell-listing/<int:listing_id>", methods=["POST"])
+def unsell_listing(listing_id):
+    require_login()
+    check_csrf()
+
+    listing = listings.get_listing(listing_id)
+
+    if listing["user_id"] != session["user_id"]:
+        abort(403)
+
+    listings.mark_listing_as_unsold(listing_id)
+    flash("Ilmoitus merkitty myynnistä poistettavaksi", "success")
 
     return redirect(f"/listing/{listing_id}")
