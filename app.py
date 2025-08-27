@@ -1,6 +1,6 @@
 from flask import Flask, abort, render_template, request, flash, redirect, session
-import sqlite3
 import secrets
+import re
 import users
 import config
 import categories
@@ -45,8 +45,26 @@ def register():
         password = request.form.get("password")
         password_confirm = request.form.get("password_confirm")
 
+        if not username or not password or not password_confirm:
+            flash("Virhe: Kaikki kentät ovat pakollisia", "error")
+            return redirect("/register")
+
+        if not (3 <= len(username) <= 20):
+            flash("Virhe: Käyttäjätunnuksen tulee olla 3-20 merkkiä pitkä", "error")
+            return redirect("/register")
+
         if password != password_confirm:
             flash("Virhe: Salasanat eivät täsmää", "error")
+            return redirect("/register")
+
+        if not re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", password):
+            flash(
+                "Virhe: Salasanan tulee olla vähintään 8 merkkiä ja sisältää kirjaimia sekä numeroita.", "error")
+            return redirect("/register")
+
+        # check if user already exists
+        if users.get_user_by_username(username):
+            flash("Virhe: Käyttäjätunnus on jo käytössä", "error")
             return redirect("/register")
 
         user_id = users.create_user(username, password)

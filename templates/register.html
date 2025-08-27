@@ -7,11 +7,27 @@
 <form method="post" action="/register">
   <div class="form-group">
     <label for="username">Käyttäjätunnus:</label>
-    <input type="text" id="username" name="username" required />
+    <input
+      type="text"
+      id="username"
+      name="username"
+      minlength="3"
+      maxlength="20"
+      pattern=".{3,20}"
+      title="Käyttäjätunnuksen tulee olla 3-20 merkkiä pitkä."
+      required
+    />
   </div>
   <div class="form-group">
     <label for="password">Salasana:</label>
-    <input type="password" id="password" name="password" required />
+    <input
+      type="password"
+      id="password"
+      name="password"
+      pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+      title="Salasanan tulee olla vähintään 8 merkkiä ja sisältää kirjaimia sekä numeroita."
+      required
+    />
   </div>
   <div class="form-group">
     <label for="password_confirm">Vahvista salasana:</label>
@@ -19,6 +35,8 @@
       type="password"
       id="password_confirm"
       name="password_confirm"
+      pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+      title="Salasanan tulee olla vähintään 8 merkkiä ja sisältää kirjaimia sekä numeroita."
       required
     />
   </div>

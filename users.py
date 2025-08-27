@@ -24,9 +24,18 @@ def authenticate_user(username, password):
 
     return None
 
+
 def get_user_info(user_id):
     sql = "SELECT id, username, created_at FROM users WHERE id = ?"
     result = db.fetch_query(sql, (user_id,))
+    if not result:
+        return None
+    return result[0]
+
+
+def get_user_by_username(username):
+    sql = "SELECT id, username, created_at FROM users WHERE username = ?"
+    result = db.fetch_query(sql, (username,))
     if not result:
         return None
     return result[0]
