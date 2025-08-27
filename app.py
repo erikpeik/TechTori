@@ -49,16 +49,11 @@ def register():
             flash("Virhe: Salasanat eivät täsmää", "error")
             return redirect("/register")
 
-        try:
-            user_id = users.create_user(username, password)
-            flash("Käyttäjä luotu onnistuneesti", "success")
-            session["username"] = username
-            session["user_id"] = user_id
-            session["csrf_token"] = secrets.token_hex(16)
-
-        except sqlite3.IntegrityError:
-            flash("Virhe: Käyttäjätunnus on jo käytössä", "error")
-            return redirect("/register")
+        user_id = users.create_user(username, password)
+        flash("Käyttäjä luotu onnistuneesti", "success")
+        session["username"] = username
+        session["user_id"] = user_id
+        session["csrf_token"] = secrets.token_hex(16)
 
         return redirect("/")
 
@@ -109,14 +104,12 @@ def create_item():
             flash("Virhe: Kaikki kentät ovat pakollisia", "error")
             return redirect("/create-item")
 
-        try:
-            listings.add_listing(
-                session["user_id"], title, description, price, condition_id, category_id)
-        except sqlite3.IntegrityError:
-            flash("Virhe: Ilmoituksen luominen epäonnistui", "error")
-            return redirect("/create-item")
+        listings.add_listing(
+            session["user_id"], title, description, price, condition_id, category_id)
+
         flash("Ilmoitus luotu onnistuneesti", "success")
         return redirect("/")
+
 
 @app.route("/listing/<int:listing_id>")
 def listing_detail(listing_id):
@@ -124,7 +117,8 @@ def listing_detail(listing_id):
     is_favorited = favorites.is_favorited(listing_id)
     if not listing:
         abort(404)
-    return render_template("listing.html", listing=listing , is_favorited=is_favorited)
+    return render_template("listing.html", listing=listing, is_favorited=is_favorited)
+
 
 @app.route("/edit-listing/<int:listing_id>", methods=["GET", "POST"])
 def edit_listing(listing_id):
@@ -149,14 +143,9 @@ def edit_listing(listing_id):
             flash("Virhe: Kaikki kentät ovat pakollisia", "error")
             return redirect(f"/edit-listing/{listing_id}")
 
-        try:
-            listings.update_listing(
-                listing_id, title, description, price, condition_id, category_id)
-            flash("Ilmoitus päivitetty onnistuneesti", "success")
-            return redirect(f"/listing/{listing_id}")
-        except sqlite3.IntegrityError:
-            flash("Virhe: Ilmoituksen päivittäminen epäonnistui", "error")
-            return redirect(f"/edit-listing/{listing_id}")
+        listings.update_listing(
+            listing_id, title, description, price, condition_id, category_id)
+
 
 @app.route("/delete-listing/<int:listing_id>", methods=["GET", "POST"])
 def delete_listing(listing_id):
@@ -173,6 +162,7 @@ def delete_listing(listing_id):
         flash("Ilmoitus poistettu onnistuneesti", "success")
         return redirect("/profile")
 
+
 @app.route("/profile")
 def profile():
     require_login()
@@ -181,6 +171,7 @@ def profile():
     user_listings = listings.get_user_listings(user_id)
     return render_template("profile.html", user=user_info, listings=user_listings)
 
+
 @app.route("/profile/<int:user_id>")
 def user_profile(user_id):
     user_info = users.get_user_info(user_id)
@@ -188,6 +179,7 @@ def user_profile(user_id):
         abort(404)
     user_listings = listings.get_user_listings(user_id)
     return render_template("profile.html", user=user_info, listings=user_listings)
+
 
 @app.route("/favorite/<int:listing_id>", methods=["POST"])
 def favorite_listing(listing_id):
@@ -204,15 +196,13 @@ def favorite_listing(listing_id):
 
     return redirect(redirect_url)
 
+
 @app.route("/buy-listing/<int:listing_id>", methods=["POST"])
 def buy_listing(listing_id):
     require_login()
     check_csrf()
 
-    try:
-        listings.mark_listing_as_sold(listing_id)
-        flash("Ilmoitus merkitty myydyksi", "success")
-    except sqlite3.IntegrityError:
-        flash("Virhe: Ilmoituksen merkitseminen myydyksi epäonnistui", "error")
+    listings.mark_listing_as_sold(listing_id)
+    flash("Ilmoitus merkitty myydyksi", "success")
 
     return redirect(f"/listing/{listing_id}")
