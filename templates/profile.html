@@ -10,6 +10,7 @@
 <div class="profile-info">
   <h1>{{ user.username }}</h1>
   <hr />
+  <h2 class="center-text">Omat listaukset</h2>
   {% include "listings.html" %}
 </div>
 {% if user.id == session.user_id %} {% include "favorites.html" %} {% endif %}{%

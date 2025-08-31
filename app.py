@@ -26,7 +26,13 @@ def check_csrf():
 
 @app.route("/")
 def index():
-    listings_list = listings.get_listings()
+    search = request.args.get("search")
+    category = request.args.get("category")
+    condition = request.args.get("condition")
+    exclude_own = request.args.get("exclude-own") == "on"
+
+    listings_list = listings.get_listings(
+        search, category, condition, exclude_own)
     categories_list = categories.get_categories()
     conditions_list = conditions.get_conditions()
     return render_template("index.html",  listings=listings_list, categories=categories_list, conditions=conditions_list)

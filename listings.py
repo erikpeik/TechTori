@@ -3,7 +3,7 @@ import db
 from datetime import datetime
 
 
-def get_listings():
+def get_listings(search, category, condition, exclude_own):
     user_id = session.get('user_id', None)
     sql = """
     SELECT  listings.id,
@@ -22,9 +22,28 @@ def get_listings():
     JOIN conditions ON listings.condition_id = conditions.id
     JOIN categories ON listings.category_id = categories.id
     LEFT JOIN favorites ON favorites.listing_id = listings.id AND favorites.user_id = ?
-    WHERE listings.user_id IS NOT ? AND listings.is_sold = FALSE
     """
-    return db.fetch_query(sql, (user_id, user_id,))
+
+    where = ["listings.is_sold = FALSE"]
+    params = [user_id]
+
+    if exclude_own and user_id is not None:
+        where.append("listings.user_id IS NOT ?")
+        params.append(user_id)
+    if search:
+        where.append("listings.title LIKE ?")
+        params.append(f"%{search}%")
+    if category:
+        where.append("listings.category_id = ?")
+        params.append(category)
+    if condition:
+        where.append("listings.condition_id = ?")
+        params.append(condition)
+
+    sql += "\nWHERE " + " AND ".join(where) + \
+        "\nORDER BY listings.created_at DESC"
+
+    return db.fetch_query(sql, tuple(params))
 
 
 def add_listing(user_id, title, description, price, condition_id, category_id):

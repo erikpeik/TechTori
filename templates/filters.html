@@ -30,9 +30,9 @@
     </div>
     <div class="filter-actions">
       <div class="checkbox-container">
-        <input type="checkbox" id="exclude-owned" name="exclude-owned"
-        {% if request.args.get('exclude-owned') %}checked{% endif %} />
-        <label for="exclude-owned">Älä näytä omia ilmoituksia</label>
+        <input type="checkbox" id="exclude-own" name="exclude-own"
+        {% if request.args.get('exclude-own') %}checked{% endif %} />
+        <label for="exclude-own">Älä näytä omia ilmoituksia</label>
       </div>
       <button type="submit" class="btn">Hae</button>
     </div>
