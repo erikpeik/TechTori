@@ -3,8 +3,9 @@ import db
 from datetime import datetime
 
 
-def get_listings(search, category, condition, exclude_own):
+def get_listings(search, category, condition, exclude_own, page, page_size):
     user_id = session.get('user_id', None)
+    offset = (page - 1) * page_size
     sql = """
     SELECT  listings.id,
             listings.user_id,
@@ -41,9 +42,43 @@ def get_listings(search, category, condition, exclude_own):
         params.append(condition)
 
     sql += "\nWHERE " + " AND ".join(where) + \
-        "\nORDER BY listings.created_at DESC"
+        "\nORDER BY listings.created_at DESC" + \
+        "\nLIMIT ? OFFSET ?"
+
+    params.append(page_size)
+    params.append(offset)
 
     return db.fetch_query(sql, tuple(params))
+
+
+def listing_count(search, category, condition, exclude_own):
+    user_id = session.get('user_id', None)
+    sql = """
+    SELECT COUNT(*) as count
+    FROM listings
+    JOIN users ON listings.user_id = users.id
+    JOIN conditions ON listings.condition_id = conditions.id
+    JOIN categories ON listings.category_id = categories.id
+    WHERE listings.is_sold = FALSE
+    """
+
+    params = []
+
+    if exclude_own and user_id is not None:
+        sql += " AND listings.user_id IS NOT ?"
+        params.append(user_id)
+    if search:
+        sql += " AND listings.title LIKE ?"
+        params.append(f"%{search}%")
+    if category:
+        sql += " AND listings.category_id = ?"
+        params.append(category)
+    if condition:
+        sql += " AND listings.condition_id = ?"
+        params.append(condition)
+
+    res = db.fetch_query(sql, tuple(params))
+    return res[0]["count"] if res else 0
 
 
 def add_listing(user_id, title, description, price, condition_id, category_id):

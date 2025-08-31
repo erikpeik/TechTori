@@ -42,7 +42,9 @@
         </form>
         {% endif %}
       </div>
-      <p>{{ listing.description[:150] | show_short_content }}</p>
+      {% if listing.description %}
+      <p>{{ listing.description | show_short_content }}</p>
+      {% endif %}
     </div>
     <div class="listing-body">
       <p><strong>Kategoria:</strong> {{ listing.category }}</p>

@@ -189,6 +189,13 @@ body {
   }
 }
 
+.btn.disabled {
+  background-color: #f0f0f2;
+  color: #aaa;
+  border: 1px solid #ddd;
+  cursor: not-allowed;
+}
+
 .link {
   text-decoration: underline;
   color: #296dcc;
@@ -238,6 +245,13 @@ body {
   border-radius: 5px;
   border: 1px solid #f5c6cb;
   margin-top: 10px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
 }
 
 @media (max-width: 768px) {

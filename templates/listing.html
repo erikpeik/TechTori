@@ -53,8 +53,10 @@
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
       <button type="submit" class="btn">Osta ilmoitus</button>
     </form>
-    {% else %}
+    {% elif is_sold %}
     <p class="is_sold">Ilmoitus on myyty.</p>
+    {% else %}
+    <a href="/login" class="btn">Kirjaudu sisään ostaaksesi ilmoituksen</a>
     {% endif %}
   </div>
 </div>

@@ -7,4 +7,4 @@ block content %} {% if session.username %}
 <hr />
 {% include "filters.html" %}
 <h2 class="center-text">Listaukset</h2>
-{% include "listings.html" %} {% endblock %}
+{% include "listings.html" %} {% include "pagination.html" %} {% endblock %}

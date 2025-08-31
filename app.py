@@ -1,5 +1,6 @@
 from flask import Flask, abort, render_template, request, flash, redirect, session
 import markupsafe
+import math
 import secrets
 import re
 import users
@@ -46,17 +47,37 @@ def show_short_content(content):
 
 
 @app.route("/")
-def index():
+@app.route("/<int:page>")
+def index(page=1):
+
     search = request.args.get("search")
     category = request.args.get("category")
     condition = request.args.get("condition")
     exclude_own = request.args.get("exclude-own") == "on"
 
-    listings_list = listings.get_listings(
+    listing_count = listings.listing_count(
         search, category, condition, exclude_own)
+    page_size = 10
+    page_count = math.ceil(listing_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+
+    listings_list = listings.get_listings(
+        search, category, condition, exclude_own, page, page_size)
     categories_list = categories.get_categories()
     conditions_list = conditions.get_conditions()
-    return render_template("index.html",  listings=listings_list, categories=categories_list, conditions=conditions_list)
+    return render_template(
+        "index.html",
+        listings=listings_list,
+        categories=categories_list,
+        conditions=conditions_list,
+        page=page,
+        page_count=page_count,
+    )
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -141,8 +162,8 @@ def create_item():
         condition_id = request.form.get("condition")
         category_id = request.form.get("category")
 
-        if not title or not description or not price or not condition_id or not category_id:
-            flash("Virhe: Kaikki kentät ovat pakollisia", "error")
+        if not title or not price or not condition_id or not category_id:
+            flash("Virhe: Pakolliset kentät puuttuvat", "error")
             return redirect("/create-item")
 
         if len(title) > 100:
@@ -200,8 +221,8 @@ def edit_listing(listing_id):
         condition_id = request.form.get("condition")
         category_id = request.form.get("category")
 
-        if not title or not description or not price or not condition_id or not category_id:
-            flash("Virhe: Kaikki kentät ovat pakollisia", "error")
+        if not title or not price or not condition_id or not category_id:
+            flash("Virhe: Pakolliset kentät puuttuvat", "error")
             return redirect(f"/edit-listing/{listing_id}")
 
         if len(title) > 100:

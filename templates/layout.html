@@ -11,21 +11,29 @@
       <div class="header-links">
         {% if session.user_id %}
         <a href="/create-item"
-          ><img src="/static/img/plus-circled.svg" /><span
+          ><img src="/static/img/plus-circled.svg" alt="Luo ilmoitus" /><span
             >Luo ilmoitus</span
           ></a
         >
         <a href="/profile"
-          ><img src="/static/img/avatar.svg" /><span>Oma profiili</span></a
+          ><img src="/static/img/avatar.svg" alt="Oma profiili" /><span
+            >Oma profiili</span
+          ></a
         >
         <a href="/logout"
-          ><img src="/static/img/exit.svg" /><span>Kirjaudu ulos</span></a
+          ><img src="/static/img/exit.svg" alt="Kirjaudu ulos" /><span
+            >Kirjaudu ulos</span
+          ></a
         >{% else %}
         <a href="/register"
-          ><img src="/static/img/pencil-2.svg" /><span>Luo tili</span></a
+          ><img src="/static/img/pencil-2.svg" alt="Luo tili" /><span
+            >Luo tili</span
+          ></a
         >
         <a href="/login"
-          ><img src="/static/img/avatar.svg" /><span>Kirjaudu sisään</span></a
+          ><img src="/static/img/avatar.svg" alt="Kirjaudu sisään" /><span
+            >Kirjaudu sisään</span
+          ></a
         >{% endif %}
       </div>
     </div>
