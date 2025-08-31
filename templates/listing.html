@@ -30,7 +30,10 @@
   <p class="listing-description">{{ listing.description }}</p>
 
   <p><strong>Luotu:</strong> {{ listing.created_at }}</p>
-  <p><strong>Myyjä:</strong> {{ listing.username }}</p>
+  <p>
+    <strong>Myyjä:</strong>
+    <a href="/profile/{{ listing.user_id }}">{{ listing.username }}</a>
+  </p>
 
   <div class="actions">
     {% if listing.user_id == session.get("user_id") %}
