@@ -104,7 +104,10 @@ def get_listing(listing_id):
             listings.category_id,
             listings.condition_id,
             listings.created_at,
-            listings.is_sold
+            listings.is_sold,
+            (
+                SELECT COUNT(*) FROM favorites WHERE listing_id = listings.id
+            ) AS favorites_count
     FROM listings
     JOIN users ON listings.user_id = users.id
     JOIN conditions ON listings.condition_id = conditions.id

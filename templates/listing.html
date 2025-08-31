@@ -27,9 +27,15 @@
     <span>Kategoria: <strong>{{ listing.category }}</strong></span>
     <span>Kunto: <strong>{{ listing.condition }}</strong></span>
   </div>
+  {% if listing.description %}
   <p class="listing-description">{{ listing.description | show_lines }}</p>
-
+  {% endif %}
   <p><strong>Luotu:</strong> {{ listing.created_at }}</p>
+  {% if listing.favorites_count > 0 %}
+  <p>
+    <strong>Suosikkeihin lisätty:</strong> {{ listing.favorites_count }} kertaa
+  </p>
+  {% endif %}
   <p>
     <strong>Myyjä:</strong>
     <a href="/profile/{{ listing.user_id }}">{{ listing.username }}</a>
