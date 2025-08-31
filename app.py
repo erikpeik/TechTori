@@ -1,4 +1,5 @@
 from flask import Flask, abort, render_template, request, flash, redirect, session
+import markupsafe
 import secrets
 import re
 import users
@@ -22,6 +23,26 @@ def check_csrf():
         abort(403)
     if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
+
+
+@app.template_filter()
+def show_lines(content):
+    content = str(markupsafe.escape(content))
+    content = content.replace("\n", "<br />")
+    return markupsafe.Markup(content)
+
+
+@app.template_filter()
+def show_short_content(content):
+    text = str(show_lines(content))
+    lines = text.split("<br />")
+    text = "<br />".join(lines[:5])
+    if len(text) > 150:
+        text = text[:150]
+    if len(lines) > 5 or len(text) >= 150:
+        text += "..."
+
+    return markupsafe.Markup(text)
 
 
 @app.route("/")
