@@ -1,9 +1,9 @@
+from datetime import datetime
 from flask import session
 import db
-from datetime import datetime
 
 
-def get_listings(search, category, condition, exclude_own, page, page_size):
+def get_listings(search, category, condition, exclude_own, *, page, page_size):
     user_id = session.get('user_id', None)
     offset = (page - 1) * page_size
     sql = """
@@ -81,13 +81,20 @@ def listing_count(search, category, condition, exclude_own):
     return res[0]["count"] if res else 0
 
 
-def add_listing(user_id, title, description, price, condition_id, category_id):
+def add_listing(user_id, *, title, description, price, condition_id, category_id):
     sql = """
     INSERT INTO listings (user_id, title, description, price, condition_id, category_id)
     VALUES (?, ?, ?, ?, ?, ?)
     """
-    db.execute_query(sql, (user_id, title, description,
-                     price, condition_id, category_id))
+    db.execute_query(sql,
+                     (
+                         user_id,
+                         title,
+                         description,
+                         price,
+                         condition_id,
+                         category_id)
+                     )
     return db.last_insert_id()
 
 
@@ -119,20 +126,26 @@ def get_listing(listing_id):
     res = res[0] if res else None
 
     if res is not None:
-        dt = datetime.strptime(res['created_at'], '%Y-%m-%d %H:%M:%S')
+        date = datetime.strptime(res['created_at'], '%Y-%m-%d %H:%M:%S')
         res = dict(res)
-        res['created_at'] = dt.strftime('%d.%m.%Y %H:%M:%S')
+        res['created_at'] = date.strftime('%d.%m.%Y %H:%M:%S')
     return res
 
 
-def update_listing(listing_id, title, description, price, condition_id, category_id):
+def update_listing(listing_id, *, title, description, price, condition_id, category_id):
     sql = """
     UPDATE listings
     SET title = ?, description = ?, price = ?, condition_id = ?, category_id = ?
     WHERE id = ?
     """
-    db.execute_query(sql, (title, description, price,
-                     condition_id, category_id, listing_id))
+    db.execute_query(sql,
+                     (title,
+                      description,
+                      price,
+                      condition_id,
+                      category_id,
+                      listing_id)
+                     )
 
 
 def mark_listing_as_sold(listing_id):
@@ -212,6 +225,6 @@ def get_users_last_listing_created_at(user_id):
     """
     res = db.fetch_query(sql, (user_id,))
     if res and res[0]["created_at"]:
-        dt = datetime.strptime(res[0]['created_at'], '%Y-%m-%d %H:%M:%S')
-        return dt.strftime('%d.%m.%Y %H:%M:%S')
+        date = datetime.strptime(res[0]['created_at'], '%Y-%m-%d %H:%M:%S')
+        return date.strftime('%d.%m.%Y %H:%M:%S')
     return None

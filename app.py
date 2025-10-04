@@ -1,9 +1,9 @@
-from flask import Flask, abort, render_template, request, flash, redirect, session
-from urllib.parse import urlencode
-import markupsafe
-import math
-import secrets
 import re
+import secrets
+import math
+from urllib.parse import urlencode
+from flask import Flask, abort, render_template, request, flash, redirect, session
+import markupsafe
 import users
 import config
 import categories
@@ -11,8 +11,8 @@ import conditions
 import listings
 import favorites
 
-app = Flask(__name__)
-app.secret_key = config.secret_key
+APP = Flask(__name__)
+APP.secret_key = config.SECRET_KEY
 
 
 def require_login():
@@ -27,14 +27,14 @@ def check_csrf():
         abort(403)
 
 
-@app.template_filter()
+@APP.template_filter()
 def show_lines(content):
     content = str(markupsafe.escape(content))
     content = content.replace("\n", "<br />")
     return markupsafe.Markup(content)
 
 
-@app.template_filter()
+@APP.template_filter()
 def show_short_content(content):
     text = str(show_lines(content))
     lines = text.split("<br />")
@@ -47,14 +47,14 @@ def show_short_content(content):
     return markupsafe.Markup(text)
 
 
-@app.template_filter()
+@APP.template_filter()
 def pagination_url(page_num):
     args = request.args.copy()
     args['page'] = page_num
     return f"{request.path}?{urlencode(args)}"
 
 
-@app.route("/")
+@APP.route("/")
 def index():
     search = request.args.get("search")
     category = request.args.get("category")
@@ -73,7 +73,13 @@ def index():
         return redirect(pagination_url(page_count))
 
     listings_list = listings.get_listings(
-        search, category, condition, exclude_own, page, page_size)
+        search,
+        category,
+        condition,
+        exclude_own,
+        page=page,
+        page_size=page_size
+    )
     categories_list = categories.get_categories()
     conditions_list = conditions.get_conditions()
     return render_template(
@@ -86,66 +92,66 @@ def index():
     )
 
 
-@app.route("/register", methods=["GET", "POST"])
+@APP.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
         return render_template("register.html")
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        password_confirm = request.form.get("password_confirm")
 
-        if not username or not password or not password_confirm:
-            flash("Virhe: Kaikki kentät ovat pakollisia", "error")
-            return redirect("/register")
+    # POST method
+    username = request.form.get("username")
+    password = request.form.get("password")
+    password_confirm = request.form.get("password_confirm")
 
-        if not (3 <= len(username) <= 20):
-            flash("Virhe: Käyttäjätunnuksen tulee olla 3-20 merkkiä pitkä", "error")
-            return redirect("/register")
+    error_msg = None
 
-        if password != password_confirm:
-            flash("Virhe: Salasanat eivät täsmää", "error")
-            return redirect("/register")
+    if not username or not password or not password_confirm:
+        error_msg = "Virhe: Kaikki kentät ovat pakollisia"
+    elif not 3 <= len(username) <= 20:
+        error_msg = "Virhe: Käyttäjätunnuksen tulee olla 3-20 merkkiä pitkä"
+    elif password != password_confirm:
+        error_msg = "Virhe: Salasanat eivät täsmää"
+    elif not re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", password):
+        error_msg = (
+            "Virhe: Salasanan tulee olla vähintään 8 merkkiä ja "
+            "sisältää kirjaimia sekä numeroita."
+        )
+    elif users.get_user_by_username(username):
+        error_msg = "Virhe: Käyttäjätunnus on jo käytössä"
 
-        if not re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", password):
-            flash(
-                "Virhe: Salasanan tulee olla vähintään 8 merkkiä ja sisältää kirjaimia sekä numeroita.", "error")
-            return redirect("/register")
+    if error_msg:
+        flash(error_msg, "error")
+        return redirect("/register")
 
-        # check if user already exists
-        if users.get_user_by_username(username):
-            flash("Virhe: Käyttäjätunnus on jo käytössä", "error")
-            return redirect("/register")
+    user_id = users.create_user(username, password)
+    flash("Käyttäjä luotu onnistuneesti", "success")
+    session["username"] = username
+    session["user_id"] = user_id
+    session["csrf_token"] = secrets.token_hex(16)
 
-        user_id = users.create_user(username, password)
-        flash("Käyttäjä luotu onnistuneesti", "success")
-        session["username"] = username
-        session["user_id"] = user_id
-        session["csrf_token"] = secrets.token_hex(16)
-
-        return redirect("/")
+    return redirect("/")
 
 
-@app.route("/login", methods=["GET", "POST"])
+@APP.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         return render_template("login.html")
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
 
-        user_id = users.authenticate_user(username, password)
-        if user_id is None:
-            flash("Virhe: Väärä käyttäjätunnus tai salasana", "error")
-            return redirect("/login")
+    # POST method
+    username = request.form.get("username")
+    password = request.form.get("password")
 
-        session["user_id"] = user_id
-        session["username"] = username
-        session["csrf_token"] = secrets.token_hex(16)
-        return redirect("/")
+    user_id = users.authenticate_user(username, password)
+    if user_id is None:
+        flash("Virhe: Väärä käyttäjätunnus tai salasana", "error")
+        return redirect("/login")
+
+    session["user_id"] = user_id
+    session["username"] = username
+    session["csrf_token"] = secrets.token_hex(16)
+    return redirect("/")
 
 
-@app.route("/logout")
+@APP.route("/logout")
 def logout():
     if "user_id" in session:
         del session["user_id"]
@@ -153,62 +159,70 @@ def logout():
     return redirect("/")
 
 
-@app.route("/create-item", methods=["GET", "POST"])
+@APP.route("/create-item", methods=["GET", "POST"])
 def create_item():
     require_login()
     if request.method == "GET":
         categories_list = categories.get_categories()
         conditions_list = conditions.get_conditions()
-        return render_template("create-item.html", categories=categories_list, conditions=conditions_list)
-    if request.method == "POST":
-        check_csrf()
-        title = request.form.get("title")
-        description = request.form.get("description")
-        price = request.form.get("price")
-        condition_id = request.form.get("condition")
-        category_id = request.form.get("category")
+        return render_template("create-item.html",
+                               categories=categories_list,
+                               conditions=conditions_list)
 
-        if not title or not price or not condition_id or not category_id:
-            flash("Virhe: Pakolliset kentät puuttuvat", "error")
-            return redirect("/create-item")
+    # POST method
 
-        if len(title) > 100:
-            flash("Virhe: Otsikon maksimipituus on 100 merkkiä", "error")
-            return redirect("/create-item")
+    check_csrf()
+    title = request.form.get("title")
+    description = request.form.get("description")
+    price = request.form.get("price")
+    condition_id = request.form.get("condition")
+    category_id = request.form.get("category")
 
-        if len(description) > 1000:
-            flash("Virhe: Kuvauksen maksimipituus on 1000 merkkiä", "error")
-            return redirect("/create-item")
+    error_msg = None
 
-        if int(price) < 0 or int(price) > 10000:
-            flash("Virhe: Hinta ei voi olla negatiivinen tai yli 10 000€", "error")
-            return redirect("/create-item")
+    if not title or not price or not condition_id or not category_id:
+        error_msg = "Virhe: Pakolliset kentät puuttuvat"
+    elif len(title) > 100:
+        error_msg = "Virhe: Otsikon maksimipituus on 100 merkkiä"
+    elif len(description) > 1000:
+        error_msg = "Virhe: Kuvauksen maksimipituus on 1000 merkkiä"
+    elif int(price) < 0 or int(price) > 10000:
+        error_msg = "Virhe: Hinta ei voi olla negatiivinen tai yli 10 000€"
+    elif not conditions.get_condition_by_id(condition_id) \
+            or not categories.get_category_by_id(category_id):
+        error_msg = "Virhe: Valittu kunto tai kategoria on virheellinen"
 
-        condition = conditions.get_condition_by_id(condition_id)
-        category = categories.get_category_by_id(category_id)
+    if error_msg:
+        flash(error_msg, "error")
+        return redirect("/create-item")
 
-        if not condition or not category:
-            flash("Virhe: Valittu kunto tai kategoria on virheellinen", "error")
-            return redirect("/create-item")
+    listings.add_listing(
+        session["user_id"],
+        title=title,
+        description=description,
+        price=price,
+        condition_id=condition_id,
+        category_id=category_id
+    )
 
-        listings.add_listing(
-            session["user_id"], title, description, price, condition_id, category_id)
-
-        flash("Ilmoitus luotu onnistuneesti", "success")
-        return redirect("/")
+    flash("Ilmoitus luotu onnistuneesti", "success")
+    return redirect("/")
 
 
-@app.route("/listing/<int:listing_id>")
+@APP.route("/listing/<int:listing_id>")
 def listing_detail(listing_id):
     listing = listings.get_listing(listing_id)
     is_favorited = favorites.is_favorited(listing_id)
     is_sold = listings.is_listing_sold(listing_id)
     if not listing:
         abort(404)
-    return render_template("listing.html", listing=listing, is_favorited=is_favorited, is_sold=is_sold)
+    return render_template("listing.html",
+                           listing=listing,
+                           is_favorited=is_favorited,
+                           is_sold=is_sold)
 
 
-@app.route("/edit-listing/<int:listing_id>", methods=["GET", "POST"])
+@APP.route("/edit-listing/<int:listing_id>", methods=["GET", "POST"])
 def edit_listing(listing_id):
     require_login()
     if request.method == "GET":
@@ -217,48 +231,53 @@ def edit_listing(listing_id):
             abort(403)
         categories_list = categories.get_categories()
         conditions_list = conditions.get_conditions()
-        return render_template("edit-listing.html", listing=listing, categories=categories_list, conditions=conditions_list)
+        return render_template("edit-listing.html",
+                               listing=listing,
+                               categories=categories_list,
+                               conditions=conditions_list
+                               )
 
-    if request.method == "POST":
-        check_csrf()
-        title = request.form.get("title")
-        description = request.form.get("description")
-        price = request.form.get("price")
-        condition_id = request.form.get("condition")
-        category_id = request.form.get("category")
+    # POST method
+    check_csrf()
+    title = request.form.get("title")
+    description = request.form.get("description")
+    price = request.form.get("price")
+    condition_id = request.form.get("condition")
+    category_id = request.form.get("category")
 
-        if not title or not price or not condition_id or not category_id:
-            flash("Virhe: Pakolliset kentät puuttuvat", "error")
-            return redirect(f"/edit-listing/{listing_id}")
+    error_msg = None
 
-        if len(title) > 100:
-            flash("Virhe: Otsikon maksimipituus on 100 merkkiä", "error")
-            return redirect(f"/edit-listing/{listing_id}")
+    if not title or not price or not condition_id or not category_id:
+        error_msg = "Virhe: Pakolliset kentät puuttuvat"
+    elif len(title) > 100:
+        error_msg = "Virhe: Otsikon maksimipituus on 100 merkkiä"
+    elif len(description) > 1000:
+        error_msg = "Virhe: Kuvauksen maksimipituus on 1000 merkkiä"
+    elif int(price) < 0 or int(price) > 10000:
+        error_msg = "Virhe: Hinta ei voi olla negatiivinen tai yli 10 000€"
+    elif not conditions.get_condition_by_id(condition_id) or \
+            not categories.get_category_by_id(category_id):
+        error_msg = "Virhe: Valittu kunto tai kategoria on virheellinen"
 
-        if len(description) > 1000:
-            flash("Virhe: Kuvauksen maksimipituus on 1000 merkkiä", "error")
-            return redirect(f"/edit-listing/{listing_id}")
+    if error_msg:
+        flash(error_msg, "error")
+        return redirect(f"/edit-listing/{listing_id}")
 
-        if int(price) < 0 or int(price) > 10000:
-            flash("Virhe: Hinta ei voi olla negatiivinen tai yli 10 000€", "error")
-            return redirect(f"/edit-listing/{listing_id}")
+    listings.update_listing(
+        listing_id,
+        title=title,
+        description=description,
+        price=price,
+        condition_id=condition_id,
+        category_id=category_id
+    )
 
-        condition = conditions.get_condition_by_id(condition_id)
-        category = categories.get_category_by_id(category_id)
+    flash("Ilmoitus päivitetty onnistuneesti", "success")
 
-        if not condition or not category:
-            flash("Virhe: Valittu kunto tai kategoria on virheellinen", "error")
-            return redirect(f"/edit-listing/{listing_id}")
-
-        listings.update_listing(
-            listing_id, title, description, price, condition_id, category_id)
-
-        flash("Ilmoitus päivitetty onnistuneesti", "success")
-
-        return redirect(f"/listing/{listing_id}")
+    return redirect(f"/listing/{listing_id}")
 
 
-@app.route("/delete-listing/<int:listing_id>", methods=["GET", "POST"])
+@APP.route("/delete-listing/<int:listing_id>", methods=["GET", "POST"])
 def delete_listing(listing_id):
     require_login()
     if request.method == "GET":
@@ -276,9 +295,10 @@ def delete_listing(listing_id):
         listings.delete_listing(listing_id)
         flash("Ilmoitus poistettu onnistuneesti", "success")
         return redirect("/profile")
+    return None
 
 
-@app.route("/profile")
+@APP.route("/profile")
 def profile():
     require_login()
     user_id = session["user_id"]
@@ -310,7 +330,7 @@ def profile():
                            )
 
 
-@app.route("/profile/<int:user_id>")
+@APP.route("/profile/<int:user_id>")
 def user_profile(user_id):
     user_info = users.get_user_info(user_id)
     if not user_info:
@@ -340,7 +360,7 @@ def user_profile(user_id):
                            )
 
 
-@app.route("/favorite/<int:listing_id>", methods=["POST"])
+@APP.route("/favorite/<int:listing_id>", methods=["POST"])
 def favorite_listing(listing_id):
     require_login()
     check_csrf()
@@ -356,7 +376,7 @@ def favorite_listing(listing_id):
     return redirect(redirect_url)
 
 
-@app.route("/buy-listing/<int:listing_id>", methods=["POST"])
+@APP.route("/buy-listing/<int:listing_id>", methods=["POST"])
 def buy_listing(listing_id):
     require_login()
     check_csrf()
@@ -367,7 +387,7 @@ def buy_listing(listing_id):
     return redirect(f"/listing/{listing_id}")
 
 
-@app.route("/unsell-listing/<int:listing_id>", methods=["POST"])
+@APP.route("/unsell-listing/<int:listing_id>", methods=["POST"])
 def unsell_listing(listing_id):
     require_login()
     check_csrf()
