@@ -11,8 +11,8 @@ import conditions
 import listings
 import favorites
 
-APP = Flask(__name__)
-APP.secret_key = config.SECRET_KEY
+app = Flask(__name__)
+app.secret_key = config.SECRET_KEY
 
 
 def require_login():
@@ -27,14 +27,14 @@ def check_csrf():
         abort(403)
 
 
-@APP.template_filter()
+@app.template_filter()
 def show_lines(content):
     content = str(markupsafe.escape(content))
     content = content.replace("\n", "<br />")
     return markupsafe.Markup(content)
 
 
-@APP.template_filter()
+@app.template_filter()
 def show_short_content(content):
     text = str(show_lines(content))
     lines = text.split("<br />")
@@ -47,14 +47,14 @@ def show_short_content(content):
     return markupsafe.Markup(text)
 
 
-@APP.template_filter()
+@app.template_filter()
 def pagination_url(page_num):
     args = request.args.copy()
     args['page'] = page_num
     return f"{request.path}?{urlencode(args)}"
 
 
-@APP.route("/")
+@app.route("/")
 def index():
     search = request.args.get("search")
     category = request.args.get("category")
@@ -92,7 +92,7 @@ def index():
     )
 
 
-@APP.route("/register", methods=["GET", "POST"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
         return render_template("register.html")
@@ -131,7 +131,7 @@ def register():
     return redirect("/")
 
 
-@APP.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         return render_template("login.html")
@@ -151,7 +151,7 @@ def login():
     return redirect("/")
 
 
-@APP.route("/logout")
+@app.route("/logout")
 def logout():
     if "user_id" in session:
         del session["user_id"]
@@ -159,7 +159,7 @@ def logout():
     return redirect("/")
 
 
-@APP.route("/create-item", methods=["GET", "POST"])
+@app.route("/create-item", methods=["GET", "POST"])
 def create_item():
     require_login()
     if request.method == "GET":
@@ -209,7 +209,7 @@ def create_item():
     return redirect("/")
 
 
-@APP.route("/listing/<int:listing_id>")
+@app.route("/listing/<int:listing_id>")
 def listing_detail(listing_id):
     listing = listings.get_listing(listing_id)
     is_favorited = favorites.is_favorited(listing_id)
@@ -222,7 +222,7 @@ def listing_detail(listing_id):
                            is_sold=is_sold)
 
 
-@APP.route("/edit-listing/<int:listing_id>", methods=["GET", "POST"])
+@app.route("/edit-listing/<int:listing_id>", methods=["GET", "POST"])
 def edit_listing(listing_id):
     require_login()
     if request.method == "GET":
@@ -277,7 +277,7 @@ def edit_listing(listing_id):
     return redirect(f"/listing/{listing_id}")
 
 
-@APP.route("/delete-listing/<int:listing_id>", methods=["GET", "POST"])
+@app.route("/delete-listing/<int:listing_id>", methods=["GET", "POST"])
 def delete_listing(listing_id):
     require_login()
     if request.method == "GET":
@@ -298,7 +298,7 @@ def delete_listing(listing_id):
     return None
 
 
-@APP.route("/profile")
+@app.route("/profile")
 def profile():
     require_login()
     user_id = session["user_id"]
@@ -330,7 +330,7 @@ def profile():
                            )
 
 
-@APP.route("/profile/<int:user_id>")
+@app.route("/profile/<int:user_id>")
 def user_profile(user_id):
     user_info = users.get_user_info(user_id)
     if not user_info:
@@ -360,7 +360,7 @@ def user_profile(user_id):
                            )
 
 
-@APP.route("/favorite/<int:listing_id>", methods=["POST"])
+@app.route("/favorite/<int:listing_id>", methods=["POST"])
 def favorite_listing(listing_id):
     require_login()
     check_csrf()
@@ -376,7 +376,7 @@ def favorite_listing(listing_id):
     return redirect(redirect_url)
 
 
-@APP.route("/buy-listing/<int:listing_id>", methods=["POST"])
+@app.route("/buy-listing/<int:listing_id>", methods=["POST"])
 def buy_listing(listing_id):
     require_login()
     check_csrf()
@@ -387,7 +387,7 @@ def buy_listing(listing_id):
     return redirect(f"/listing/{listing_id}")
 
 
-@APP.route("/unsell-listing/<int:listing_id>", methods=["POST"])
+@app.route("/unsell-listing/<int:listing_id>", methods=["POST"])
 def unsell_listing(listing_id):
     require_login()
     check_csrf()
