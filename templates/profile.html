@@ -9,8 +9,12 @@
 
 <div class="profile-info">
   <h1>{{ user.username }}</h1>
+  <h4>Käyttäjällä on {{ listings_count }} ilmoitusta.</h4>
+  {% if last_listing_date %}
+  <h4>Viimeisin lisätty ilmoitus: {{ last_listing_date }}</h4>
+  {% endif %}
   <hr />
-  <h2 class="center-text">Omat listaukset</h2>
+  <h2 class="center-text">Listaukset</h2>
   {% include "listings.html" %}
 </div>
 {% if user.id == session.user_id %} {% include "favorites.html" %} {% endif %}{%

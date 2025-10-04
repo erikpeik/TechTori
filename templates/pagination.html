@@ -1,10 +1,7 @@
+{% if page_count > 1 %}
 <div class="pagination">
   {% if page > 1 %}
-  <a
-    href="/{{ page - 1 }}{% if request.query_string %}?{{ request.query_string.decode('utf-8') }}{% endif %}"
-    class="btn"
-    >Edellinen</a
-  >
+  <a href="{{ (page-1) | pagination_url }}" class="btn">Edellinen</a>
   {% else %}
   <span class="btn disabled">Edellinen</span>
   {% endif %}
@@ -12,12 +9,9 @@
   <span class="page-info">Sivu {{ page }} / {{ page_count }}</span>
 
   {% if page < page_count %}
-  <a
-    href="/{{ page + 1 }}{% if request.query_string %}?{{ request.query_string.decode('utf-8') }}{% endif %}"
-    class="btn"
-    >Seuraava</a
-  >
+  <a href="{{ (page+1) | pagination_url }}" class="btn">Seuraava</a>
   {% else %}
   <span class="btn disabled">Seuraava</span>
   {% endif %}
 </div>
+{% endif %}

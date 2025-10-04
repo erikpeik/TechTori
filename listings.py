@@ -161,7 +161,7 @@ def delete_listing(listing_id):
     db.execute_query(sql, (listing_id,))
 
 
-def get_user_listings(user_id):
+def get_user_listings(user_id, page, page_size):
     sql = """
     SELECT  listings.id,
             listings.user_id,
@@ -171,13 +171,15 @@ def get_user_listings(user_id):
             conditions.name AS condition,
             categories.name AS category,
             listings.created_at,
-            listings.is_sold
+            listings.is_sold,
+            listings.created_at
     FROM listings
     JOIN conditions ON listings.condition_id = conditions.id
     JOIN categories ON listings.category_id = categories.id
     WHERE listings.user_id = ?
+    LIMIT ? OFFSET ?
     """
-    return db.fetch_query(sql, (user_id,))
+    return db.fetch_query(sql, (user_id, page_size, (page - 1) * page_size))
 
 
 def is_listing_sold(listing_id):
@@ -188,3 +190,28 @@ def is_listing_sold(listing_id):
     """
     res = db.fetch_query(sql, (listing_id,))
     return res[0]["is_sold"] if res else None
+
+
+def get_user_listings_count(user_id) -> int:
+    sql = """
+    SELECT COUNT(*) as count
+    FROM listings
+    WHERE listings.user_id = ?
+    """
+    res = db.fetch_query(sql, (user_id,))
+    return res[0]["count"] if res else 0
+
+
+def get_users_last_listing_created_at(user_id):
+    sql = """
+    SELECT created_at
+    FROM listings
+    WHERE user_id = ?
+    ORDER BY created_at DESC
+    LIMIT 1
+    """
+    res = db.fetch_query(sql, (user_id,))
+    if res and res[0]["created_at"]:
+        dt = datetime.strptime(res[0]['created_at'], '%Y-%m-%d %H:%M:%S')
+        return dt.strftime('%d.%m.%Y %H:%M:%S')
+    return None

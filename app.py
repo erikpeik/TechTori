@@ -1,4 +1,5 @@
 from flask import Flask, abort, render_template, request, flash, redirect, session
+from urllib.parse import urlencode
 import markupsafe
 import math
 import secrets
@@ -46,25 +47,30 @@ def show_short_content(content):
     return markupsafe.Markup(text)
 
 
-@app.route("/")
-@app.route("/<int:page>")
-def index(page=1):
+@app.template_filter()
+def pagination_url(page_num):
+    args = request.args.copy()
+    args['page'] = page_num
+    return f"{request.path}?{urlencode(args)}"
 
+
+@app.route("/")
+def index():
     search = request.args.get("search")
     category = request.args.get("category")
     condition = request.args.get("condition")
     exclude_own = request.args.get("exclude-own") == "on"
+    page = request.args.get("page", 1, type=int)
 
     listing_count = listings.listing_count(
         search, category, condition, exclude_own)
     page_size = 10
-    page_count = math.ceil(listing_count / page_size)
-    page_count = max(page_count, 1)
+    page_count = max(math.ceil(listing_count / page_size), 1)
 
     if page < 1:
-        return redirect("/")
+        return redirect(pagination_url(1))
     if page > page_count:
-        return redirect("/" + str(page_count))
+        return redirect(pagination_url(page_count))
 
     listings_list = listings.get_listings(
         search, category, condition, exclude_own, page, page_size)
@@ -277,10 +283,31 @@ def profile():
     require_login()
     user_id = session["user_id"]
     user_info = users.get_user_info(user_id)
-    user_listings = listings.get_user_listings(user_id)
-    user_favorites = users.get_favorites(user_id)
+    listings_count = listings.get_user_listings_count(user_id)
 
-    return render_template("profile.html", user=user_info, listings=user_listings, favorites=user_favorites)
+    page = request.args.get("page", 1, type=int)
+
+    page_size = 10
+    page_count = max(math.ceil(listings_count / page_size), 1)
+
+    if page < 1:
+        return redirect("/profile")
+    if page > page_count:
+        return redirect(f"/profile?page={page_count}")
+
+    user_listings = listings.get_user_listings(user_id, page, page_size)
+    user_favorites = users.get_favorites(user_id)
+    last_listing_date = listings.get_users_last_listing_created_at(user_id)
+
+    return render_template("profile.html",
+                           user=user_info,
+                           listings=user_listings,
+                           favorites=user_favorites,
+                           listings_count=listings_count,
+                           last_listing_date=last_listing_date,
+                           page=page,
+                           page_count=page_count
+                           )
 
 
 @app.route("/profile/<int:user_id>")
@@ -288,8 +315,29 @@ def user_profile(user_id):
     user_info = users.get_user_info(user_id)
     if not user_info:
         abort(404)
-    user_listings = listings.get_user_listings(user_id)
-    return render_template("profile.html", user=user_info, listings=user_listings)
+    listings_count = listings.get_user_listings_count(user_id)
+
+    page = request.args.get("page", 1, type=int)
+
+    page_size = 10
+    page_count = max(math.ceil(listings_count / page_size), 1)
+
+    if page < 1:
+        return redirect(f"/profile/{user_id}")
+    if page > page_count:
+        return redirect(f"/profile/{user_id}?page={page_count}")
+
+    user_listings = listings.get_user_listings(user_id, page, page_size)
+    last_listing_date = listings.get_users_last_listing_created_at(user_id)
+
+    return render_template("profile.html",
+                           user=user_info,
+                           listings=user_listings,
+                           listings_count=listings_count,
+                           last_listing_date=last_listing_date,
+                           page=page,
+                           page_count=page_count
+                           )
 
 
 @app.route("/favorite/<int:listing_id>", methods=["POST"])

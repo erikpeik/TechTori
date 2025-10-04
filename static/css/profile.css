@@ -14,3 +14,9 @@
   cursor: pointer;
   text-decoration: none;
 }
+
+.profile-info {
+  h4 {
+    font-weight: normal;
+  }
+}
