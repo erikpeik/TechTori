@@ -12,6 +12,8 @@
   <h4>Käyttäjällä on {{ listings_count }} ilmoitusta.</h4>
   {% if last_listing_date %}
   <h4>Viimeisin lisätty ilmoitus: {{ last_listing_date }}</h4>
+  {% endif %} {% if user.created_at_formatted %}
+  <h4>Rekisteröitynyt: {{ user.created_at_formatted }}</h4>
   {% endif %}
   <hr />
   <h2 class="center-text">Listaukset</h2>

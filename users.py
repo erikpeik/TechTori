@@ -1,3 +1,4 @@
+from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import db
@@ -30,7 +31,12 @@ def get_user_info(user_id):
     result = db.fetch_query(sql, (user_id,))
     if not result:
         return None
-    return result[0]
+    user_dict = dict(result[0])
+    created_at = datetime.strptime(
+        user_dict['created_at'], '%Y-%m-%d %H:%M:%S')
+    user_dict['created_at_formatted'] = created_at.strftime('%d.%m.%Y')
+
+    return user_dict
 
 
 def get_user_by_username(username):
